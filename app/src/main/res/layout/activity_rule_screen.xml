@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RuleScreen"
+    android:background="@color/teal_200">
+
+  <Button
+      android:id="@+id/HomeButton"
+      android:layout_width="35dp"
+      android:layout_height="35dp"
+
+      android:textSize="10sp"
+      android:backgroundTint="@color/teal_700"/>
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/MultipleGameTitleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="FIVE PEBELLS"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/MultipleTitleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="RULES"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/RuleContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:background="@color/white"
+      android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/RuleOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:padding="10dp"
+        android:text="* The game involves 2 players placing their respective symbols in a 6x6 grid. The player who manages to place 5 of their symbols in horizontal/vertical/diagonal row wins the game. If either player fails to do so the game ends in a draw."
+        android:textColor="@color/black"
+        android:textColorHighlight="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/RuleTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="92dp"
+        android:layout_marginTop="5sp"
+        android:padding="10dp"
+        android:text="* The players are allowed to switch their symbols after a certain amount of moves"
+        android:textColor="@color/black"
+        android:textColorHighlight="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/RuleThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5sp"
+        android:padding="10dp"
+        android:text="* If a player chooses to swap his symbols with his opponent, they lose their current turn and the opponent get to play again. "
+        android:textColor="@color/black"
+        android:textColorHighlight="@color/black"
+        android:textSize="20sp" />
+  </LinearLayout>
+</RelativeLayout>
