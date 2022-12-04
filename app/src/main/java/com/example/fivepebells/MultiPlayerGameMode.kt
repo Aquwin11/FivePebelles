@@ -1,12 +1,15 @@
 package com.example.fivepebells
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Debug
 import android.os.Handler
 import android.view.View
 import android.widget.Button
+import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -57,8 +60,10 @@ class MultiPlayerGameMode : AppCompatActivity() {
     lateinit var BoxBtn35: Button
     lateinit var BoxBtn36: Button
     lateinit var Reset : Button
-    /*lateinit var Player1Switch: Button
-    lateinit var Player2Switch: Button*/
+    lateinit var  player1Turn : RadioButton
+    lateinit var  player2Turn : RadioButton
+    lateinit var Player1Switch: Button
+    lateinit var Player2Switch: Button
     lateinit var SwitchCounter: TextView
     lateinit var RoomHolder :Button
 
@@ -77,7 +82,7 @@ class MultiPlayerGameMode : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_player_game_mode)
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         player1TV=findViewById(R.id.Player1Text)
         player2TV=findViewById(R.id.Player2Text)
         player2Value=findViewById(R.id.Player2Character)
@@ -122,14 +127,26 @@ class MultiPlayerGameMode : AppCompatActivity() {
         BoxBtn35=findViewById(R.id.Box35)
         BoxBtn36=findViewById(R.id.Box36)
         RoomHolder = findViewById(R.id.RoomCodeContainer)
+        player2Turn = findViewById(R.id.player2RadioButton)
+        player1Turn = findViewById(R.id.player1RadioButton)
+        SwitchCounter=findViewById(R.id.SwitchCounter)
+        Player1Switch=findViewById(R.id.MultiPlayerSwitchButtonPlayer1)
+        Player2Switch=findViewById(R.id.MultiPlayerSwitchButtonPlayer2)
         RoomHolder.text = code
         RoomHolder.isEnabled=false
+        Player1Switch.isEnabled=false
+        Player2Switch.isEnabled=false
+        Player2Switch.visibility=View.INVISIBLE
+        player1Turn.isChecked = !Myturn
+        player2Turn.isChecked = Myturn
         FirebaseDatabase.getInstance().reference.child("data").child(code).addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+
                 var data = snapshot.value
                 if(Myturn)
                 {
                     Myturn=false
+
                     moveOnline(data.toString(), Myturn)
                 }
                 else
@@ -145,7 +162,29 @@ class MultiPlayerGameMode : AppCompatActivity() {
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 reset()
-                Toast.makeText(this@MultiPlayerGameMode, "Game Reset", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@MultiPlayerGameMode, "Game Reset", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+        FirebaseDatabase.getInstance().reference.child("Swap").child(code).addChildEventListener(object : ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                SwapArrayAndUpdateTimer()
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                TODO("Not yet implemented")
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
@@ -166,16 +205,29 @@ class MultiPlayerGameMode : AppCompatActivity() {
         Reset.setOnClickListener{
             reset()
         }
+        Player1Switch.setOnClickListener{
+            switch()
+        }
     }
 
     fun moveOnline(data : String,move:Boolean)
     {
+        val NewString = SwitchCounter.text
+        var NewInt = Integer.parseInt(NewString as String)
+        if(NewInt >0)
+        {
+            NewInt--
+        }
+        println("NewInt and Turn" + NewInt + Myturn)
+        SwitchCounter.text = (NewInt).toString()
         if(move)
         {
+            player2Turn.isChecked = true
+            player1Turn.isChecked = false
             var buttonSelected:Button?
             buttonSelected = when(data.toInt())
             {
-                1 -> BoxBtn1
+                1->BoxBtn1
                 2->BoxBtn2
                 3->BoxBtn3
                 4->BoxBtn4
@@ -215,24 +267,72 @@ class MultiPlayerGameMode : AppCompatActivity() {
                     BoxBtn1
                 }
             }
-            buttonSelected.text="O"
-            buttonSelected.setTextColor(Color.parseColor("#D22BB804"))
+            if(player1Value.text=="X")
+            {
+                buttonSelected.text = "O"
+                buttonSelected.setTextColor(Color.parseColor("#EC0C0C"))
+
+            }
+            else if(player1Value.text == "O")
+            {
+                buttonSelected.text = "X"
+                buttonSelected.setTextColor(Color.parseColor("#D22BB804"))
+            }
+            //buttonSelected.text="O"
+            //buttonSelected.setTextColor(Color.parseColor("#D22BB804"))
             buttonSelected.isEnabled=false
             player2.add(data.toInt())
             emptyCell.add(data.toInt())
+            if(NewInt <= 0 && Myturn)
+            {
+                Player1Switch.isEnabled=true
+            }
             checkForWinner()
         }
     }
 
     fun playNow(buttonSelected:Button,currCell:Int)
     {
-        buttonSelected.text = "X"
+        /*val NewString = SwitchCounter.text
+        var NewInt = Integer.parseInt(NewString as String)
+        if(NewInt >0)
+        {
+            NewInt--
+        }
+        SwitchCounter.text = (NewInt).toString()*/
+        /*var NewInt = Integer.parseInt(SwitchCounter.text as String)
+        println("NewInt " + NewInt)
+        if(NewInt<1)
+        {
+            if(Myturn)
+            {
+                Player1Switch.isEnabled=true
+            }
+            else if(!Myturn)
+            {
+                Player1Switch.isEnabled=false
+            }
+        }*/
+        player2Turn.isChecked = false
+        player1Turn.isChecked = true
+        if(player1Value.text=="X")
+        {
+            buttonSelected.text = "X"
+            buttonSelected.setTextColor(Color.parseColor("#D22BB804"))
+        }
+        else if(player1Value.text == "O")
+        {
+            buttonSelected.text = "O"
+            buttonSelected.setTextColor(Color.parseColor("#EC0C0C"))
+        }
+
         emptyCell.remove(currCell)
         buttonSelected.isEnabled=false
-        buttonSelected.setTextColor(Color.parseColor("#EC0C0C"))
+        //buttonSelected.setTextColor(Color.parseColor("#EC0C0C"))
         player1.add(currCell)
         emptyCell.add(currCell)
         checkForWinner()
+        Player1Switch.isEnabled=false
     }
     fun buttonClick(view: View){
         //println("The button click")
@@ -282,12 +382,8 @@ class MultiPlayerGameMode : AppCompatActivity() {
                     cellID = 0
                 }
             }
-            playTurn=false
-            Handler().postDelayed(Runnable { playTurn=true },700)
             playNow(but,cellID)
             updateFirebase(cellID)
-
-
         }
 
     }
@@ -302,7 +398,14 @@ class MultiPlayerGameMode : AppCompatActivity() {
 
     fun updateFirebase(cellID:Int)
     {
-        FirebaseDatabase.getInstance().reference.child("data").child(code).push().setValue(cellID)
+        if(cellID!=37)
+        {
+            FirebaseDatabase.getInstance().reference.child("data").child(code).push().setValue(cellID)
+        }
+        else
+        {
+            FirebaseDatabase.getInstance().reference.child("data").child(code).push().setValue(37)
+        }
     }
     override fun onBackPressed() {
         RemoveCode()
@@ -313,7 +416,8 @@ class MultiPlayerGameMode : AppCompatActivity() {
         exitProcess(0)
     }
     private fun reset() {
-        //SwitchCounter.text="7"
+        counterCount=1
+        SwitchCounter.text="7"
         player1TV.text ="Player 1 : $player1"
         player2TV.text ="Player 2 : $player2"
         player1Value.text="X"
@@ -546,4 +650,76 @@ class MultiPlayerGameMode : AppCompatActivity() {
         }
 
     }
+    private fun switch(){
+        Player1Switch.isEnabled=false
+        SwitchCounter.text="7"
+        val NewString = SwitchCounter.text
+        var NewInt = Integer.parseInt(NewString as String)
+        /*SwitchCounter.text = (NewInt*counterCount).toString()
+        //println("Before ActivePlayer " + activeUser)
+        var templist1 = ArrayList<Int>()
+        var templist2 = ArrayList<Int>()
+        templist1=player1
+        templist2=player2
+        player1=templist2
+        player2=templist1
+        if(player1Value.text=="X")
+        {
+            player1Value.text="O"
+            player2Value.text="X"
+
+        }
+        else
+        {
+            player1Value.text="X"
+            player2Value.text="O"
+        }*/
+        SawpUpdateFirebase(NewInt * counterCount)
+    }
+    private fun SawpUpdateFirebase(SwitchTime : Int)
+    {
+        FirebaseDatabase.getInstance().reference.child("Swap").child(code).push().setValue(SwitchTime)
+    }
+
+    fun SwapArrayAndUpdateTimer()
+    {
+        SwitchCounter.text="7"
+        counterCount++
+        println("CountCounter " + counterCount)
+        val NewString = SwitchCounter.text
+        var NewInt = Integer.parseInt(NewString as String)
+        SwitchCounter.text = (NewInt*counterCount).toString()
+        //println("Before ActivePlayer " + activeUser)
+        var templist1 = ArrayList<Int>()
+        var templist2 = ArrayList<Int>()
+        templist1=player1
+        templist2=player2
+        player1=templist2
+        player2=templist1
+        if(player1Value.text=="X")
+        {
+            player1Value.text="O"
+            player2Value.text="X"
+
+        }
+        else
+        {
+            player1Value.text="X"
+            player2Value.text="O"
+        }
+
+        if(Myturn)
+        {
+            player2Turn.isChecked=false
+            player1Turn.isChecked=true
+            Myturn=false
+        }
+        else{
+            player2Turn.isChecked=true
+            player1Turn.isChecked=false
+            Myturn=true
+        }
+        Toast.makeText(this, "Swap Symbols", Toast.LENGTH_SHORT).show()
+    }
+
 }

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.Button
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.postDelayed
@@ -58,7 +59,8 @@ class SinglePlayerGameMode : AppCompatActivity() {
     lateinit var Player2Switch:Button
     lateinit var SwitchCounter:TextView
     lateinit var Reset:Button
-
+    lateinit var Player1Turn:RadioButton
+    lateinit var Player2Turn:RadioButton
     lateinit var player1Value:TextView
     lateinit var player2Value:TextView
 
@@ -122,7 +124,9 @@ class SinglePlayerGameMode : AppCompatActivity() {
         BoxBtn34=findViewById(R.id.Box34)
         BoxBtn35=findViewById(R.id.Box35)
         BoxBtn36=findViewById(R.id.Box36)
-
+        Player1Turn = findViewById(R.id.player1RadioButton)
+        Player2Turn = findViewById(R.id.player2RadioButton)
+        Player1Turn.isChecked=true
         Reset.setOnClickListener{
             reset()
         }
@@ -149,6 +153,7 @@ class SinglePlayerGameMode : AppCompatActivity() {
             val HomeIntent = Intent(this, MainActivity::class.java)
             startActivity(HomeIntent)
         }
+
     }
 
     private fun switch(){
@@ -185,15 +190,22 @@ class SinglePlayerGameMode : AppCompatActivity() {
             if(PvP)
             {
                 activeUser=2
+                /*Player1Turn.isChecked=false
+                Player2Turn.isChecked=true*/
+
             }
             else
             {
+                /*Player1Turn.isChecked=false
+                Player2Turn.isChecked=true*/
                 robot()
             }
 
         }
         else
         {
+            Player1Turn.isChecked=true
+            Player2Turn.isChecked=false
             activeUser=1
         }
         println("After ActivePlayer " + activeUser)
@@ -277,6 +289,8 @@ class SinglePlayerGameMode : AppCompatActivity() {
         SwitchCounter.text = NewInt.toString()
         if(activeUser==1)
         {
+            Player1Turn.isChecked=false
+            Player2Turn.isChecked=true
             if(NewInt<=0)
             {
                 Player2Switch.isEnabled=true
@@ -328,7 +342,8 @@ class SinglePlayerGameMode : AppCompatActivity() {
         }
         else
         {
-
+            Player1Turn.isChecked=true
+            Player2Turn.isChecked=false
             if(NewInt==0)
             {
                 Player2Switch.isEnabled=false
@@ -547,6 +562,8 @@ class SinglePlayerGameMode : AppCompatActivity() {
         player2.clear()
         emptyCell.clear()
         activeUser=1;
+        Player1Turn.isChecked=true
+        Player2Turn.isChecked=false
         for(i in 1..36)
         {
             var buttonselected:Button?
@@ -675,7 +692,7 @@ class SinglePlayerGameMode : AppCompatActivity() {
         }
         else{
             val buttonSelected=when(rnd){
-                1 -> BoxBtn1
+                1->BoxBtn1
                 2->BoxBtn2
                 3->BoxBtn3
                 4->BoxBtn4
