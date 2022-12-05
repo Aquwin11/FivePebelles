@@ -13,6 +13,7 @@ import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -136,6 +137,8 @@ class MultiPlayerGameMode : AppCompatActivity() {
         RoomHolder.isEnabled=false
         Player1Switch.isEnabled=false
         Player2Switch.isEnabled=false
+        player1Turn.isClickable=false
+        player2Turn.isClickable=false
         Player2Switch.visibility=View.INVISIBLE
         player1Turn.isChecked = !Myturn
         player2Turn.isChecked = Myturn
@@ -202,6 +205,10 @@ class MultiPlayerGameMode : AppCompatActivity() {
             startActivity(HomeIntent)
             RemoveCode()
         }
+        if(!codeMaker)
+        {
+            Reset.visibility= View.GONE
+        }
         Reset.setOnClickListener{
             reset()
         }
@@ -212,14 +219,9 @@ class MultiPlayerGameMode : AppCompatActivity() {
 
     fun moveOnline(data : String,move:Boolean)
     {
+        println("Myturn " + Myturn)
         val NewString = SwitchCounter.text
         var NewInt = Integer.parseInt(NewString as String)
-        if(NewInt >0)
-        {
-            NewInt--
-        }
-        println("NewInt and Turn" + NewInt + Myturn)
-        SwitchCounter.text = (NewInt).toString()
         if(move)
         {
             player2Turn.isChecked = true
@@ -283,12 +285,22 @@ class MultiPlayerGameMode : AppCompatActivity() {
             buttonSelected.isEnabled=false
             player2.add(data.toInt())
             emptyCell.add(data.toInt())
+
+
             if(NewInt <= 0 && Myturn)
             {
                 Player1Switch.isEnabled=true
             }
             checkForWinner()
         }
+
+        if(NewInt >0)
+        {
+            NewInt--
+            println("Counter " + counterCount)
+        }
+        println("NewInt and Turn" + NewInt + Myturn)
+        SwitchCounter.text = (NewInt).toString()
     }
 
     fun playNow(buttonSelected:Button,currCell:Int)
@@ -398,14 +410,7 @@ class MultiPlayerGameMode : AppCompatActivity() {
 
     fun updateFirebase(cellID:Int)
     {
-        if(cellID!=37)
-        {
-            FirebaseDatabase.getInstance().reference.child("data").child(code).push().setValue(cellID)
-        }
-        else
-        {
-            FirebaseDatabase.getInstance().reference.child("data").child(code).push().setValue(37)
-        }
+        FirebaseDatabase.getInstance().reference.child("data").child(code).push().setValue(cellID)
     }
     override fun onBackPressed() {
         RemoveCode()
@@ -417,7 +422,7 @@ class MultiPlayerGameMode : AppCompatActivity() {
     }
     private fun reset() {
         counterCount=1
-        SwitchCounter.text="7"
+        SwitchCounter.text="5"
         player1TV.text ="Player 1 : $player1"
         player2TV.text ="Player 2 : $player2"
         player1Value.text="X"
@@ -652,7 +657,7 @@ class MultiPlayerGameMode : AppCompatActivity() {
     }
     private fun switch(){
         Player1Switch.isEnabled=false
-        SwitchCounter.text="7"
+        SwitchCounter.text="5"
         val NewString = SwitchCounter.text
         var NewInt = Integer.parseInt(NewString as String)
         /*SwitchCounter.text = (NewInt*counterCount).toString()
@@ -683,7 +688,7 @@ class MultiPlayerGameMode : AppCompatActivity() {
 
     fun SwapArrayAndUpdateTimer()
     {
-        SwitchCounter.text="7"
+        SwitchCounter.text="5"
         counterCount++
         println("CountCounter " + counterCount)
         val NewString = SwitchCounter.text

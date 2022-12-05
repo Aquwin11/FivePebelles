@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".RuleScreen"
     android:background="@color/teal_200">
-
   <Button
       android:id="@+id/HomeButton"
       android:layout_width="35dp"
@@ -14,74 +13,229 @@
 
       android:textSize="10sp"
       android:backgroundTint="@color/teal_700"/>
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/MultipleGameTitleText"
+  <ScrollView
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent">
+    <LinearLayout
+        android:id="@+id/RuleContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="FIVE PEBELLS"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="40sp"
-        android:textStyle="bold" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="96dp"
+        android:background="@color/teal_200"
+        android:orientation="vertical"
+        android:paddingTop="0dp">
+      <TextView
+          android:id="@+id/MultipleGameTitleText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:text="FIVE PEBELLS"
+          android:textAlignment="center"
+          android:textColor="@color/black"
+          android:textSize="40sp"
+          android:textStyle="bold" />
+      <TextView
+          android:id="@+id/MultipleTitleText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:text="RULES"
+          android:textAlignment="center"
+          android:textColor="@color/black"
+          android:textSize="35sp"
+          android:textStyle="bold"
+          android:layout_marginBottom="20dp"
+          android:layout_marginTop="20dp"/>
 
-    <TextView
-        android:id="@+id/MultipleTitleText"
+      <TextView
+          android:id="@+id/RuleOne"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:backgroundTint="@color/white"
+          android:padding="20sp"
+          android:textStyle="italic"
+          android:justificationMode="inter_word"
+          android:text="* The game involves 2 players placing their respective symbols in a 6x6 grid. The player who manages to place 5 of their symbols in horizontal/vertical/diagonal row wins the game. If either player fails to do so, the game ends in a draw."
+          android:textColor="@color/white"
+          android:textColorHighlight="@color/black"
+          android:textSize="24sp"/>
+
+      <TextView
+          android:id="@+id/RuleTwo"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5sp"
+          android:padding="20sp"
+          android:justificationMode="inter_word"
+          android:text="* The players are allowed to switch their symbols after a certain amount of moves"
+          android:textColor="@color/white"
+          android:textColorHighlight="@color/white"
+          android:textSize="24sp"
+          android:textStyle="italic"/>
+
+      <TextView
+          android:id="@+id/RuleThree"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5sp"
+          android:padding="20sp"
+          android:justificationMode="inter_word"
+          android:text="* If a player chooses to swap his symbols with his opponent, they lose their current turn and the opponent gets to play again. "
+          android:textColor="@color/white"
+          android:textColorHighlight="@color/white"
+          android:textSize="24sp"
+          android:textStyle="italic"/>
+      <TextView
+          android:id="@+id/TipsTitleText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:text="Tips"
+          android:textAlignment="center"
+          android:textColor="@color/black"
+          android:textSize="35sp"
+          android:textStyle="bold"
+          android:layout_marginBottom="20dp"
+          android:layout_marginTop="20dp"/>
+
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="400dp"
+          android:src="@drawable/tipsimages"/>
+      <TextView
+          android:id="@+id/HintOne"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5sp"
+          android:padding="20sp"
+          android:justificationMode="inter_word"
+          android:text="* It is advisable to focus on the middle 4 squares to have a higher chance of winning."
+          android:textColor="@color/white"
+          android:textColorHighlight="@color/white"
+          android:textSize="24sp"
+          android:textStyle="italic"/>
+
+
+      <TextView
+          android:id="@+id/HintTwo"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5sp"
+          android:padding="20sp"
+          android:justificationMode="inter_word"
+          android:text="* Remember, you can use the 'Swap' button to trick your opponent for your advantage."
+          android:textColor="@color/white"
+          android:textColorHighlight="@color/white"
+          android:textSize="24sp"
+          android:textStyle="italic"/>
+    </LinearLayout>
+  </ScrollView>
+
+  <!--<Button
+      android:id="@+id/HomeButton"
+      android:layout_width="35dp"
+      android:layout_height="35dp"
+
+      android:textSize="10sp"
+      android:backgroundTint="@color/teal_700"/>
+
+
+  &lt;!&ndash; Here you put the rest of your current view&ndash;&gt;
+
+    <LinearLayout
+        android:id="@+id/RuleContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="RULES"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"/>
-  </LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="96dp"
+        android:background="@color/teal_200"
+        android:orientation="vertical"
+        android:paddingTop="0dp">
+      <TextView
+          android:id="@+id/MultipleGameTitleText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:text="FIVE PEBELLS"
+          android:textAlignment="center"
+          android:textColor="@color/black"
+          android:textSize="40sp"
+          android:textStyle="bold" />
+      <TextView
+          android:id="@+id/MultipleTitleText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:text="RULES"
+          android:textAlignment="center"
+          android:textColor="@color/black"
+          android:textSize="30sp"
+          android:textStyle="bold"
+          android:layout_marginBottom="20dp"
+          android:layout_marginTop="20dp"/>
 
-  <LinearLayout
-      android:id="@+id/RuleContainer"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:background="@color/white"
-      android:orientation="vertical">
+      <TextView
+          android:id="@+id/RuleOne"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:backgroundTint="@color/white"
+          android:padding="10dp"
+          android:textStyle="bold"
+          android:text="* The game involves 2 players placing their respective symbols in a 6x6 grid. The player who manages to place 5 of their symbols in horizontal/vertical/diagonal row wins the game. If either player fails to do so, the game ends in a draw."
+          android:textColor="@color/white"
+          android:textColorHighlight="@color/black"
+          android:textSize="22sp" />
 
-    <TextView
-        android:id="@+id/RuleOne"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:padding="10dp"
-        android:text="* The game involves 2 players placing their respective symbols in a 6x6 grid. The player who manages to place 5 of their symbols in horizontal/vertical/diagonal row wins the game. If either player fails to do so the game ends in a draw."
-        android:textColor="@color/black"
-        android:textColorHighlight="@color/black"
-        android:textSize="20sp" />
+      <TextView
+          android:id="@+id/RuleTwo"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5sp"
+          android:padding="10dp"
+          android:text="* The players are allowed to switch their symbols after a certain amount of moves"
+          android:textColor="@color/white"
+          android:textColorHighlight="@color/white"
+          android:textSize="22sp"
+          android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/RuleTwo"
-        android:layout_width="wrap_content"
-        android:layout_height="92dp"
-        android:layout_marginTop="5sp"
-        android:padding="10dp"
-        android:text="* The players are allowed to switch their symbols after a certain amount of moves"
-        android:textColor="@color/black"
-        android:textColorHighlight="@color/black"
-        android:textSize="20sp" />
+      <TextView
+          android:id="@+id/RuleThree"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5sp"
+          android:padding="10dp"
+          android:text="* If a player chooses to swap his symbols with his opponent, they lose their current turn and the opponent gets to play again. "
+          android:textColor="@color/white"
+          android:textColorHighlight="@color/white"
+          android:textSize="22sp"
+          android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/RuleThree"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5sp"
-        android:padding="10dp"
-        android:text="* If a player chooses to swap his symbols with his opponent, they lose their current turn and the opponent get to play again. "
-        android:textColor="@color/black"
-        android:textColorHighlight="@color/black"
-        android:textSize="20sp" />
-  </LinearLayout>
+      <TextView
+          android:id="@+id/HintOne"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5sp"
+          android:padding="10dp"
+          android:text="* It is advisable to focus on the middle 4 squares to have a higher chance of winning."
+          android:textColor="@color/white"
+          android:textColorHighlight="@color/white"
+          android:textSize="22sp"
+          android:textStyle="bold"/>
+
+
+      <TextView
+          android:id="@+id/HintTwo"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="5sp"
+          android:padding="10dp"
+          android:text="* Remember, you can use the 'Swap' button to trick your opponent for your advantage."
+          android:textColor="@color/white"
+          android:textColorHighlight="@color/white"
+          android:textSize="22sp"
+          android:textStyle="bold"/>
+    </LinearLayout>-->
 </RelativeLayout>
