@@ -1,8 +1,13 @@
 package com.example.fivepebells
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 
@@ -35,5 +40,27 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menuButton -> {
+
+                    val OpenCreateRoomDialog = layoutInflater.inflate(R.layout.layout_dialog_box, null)
+                    val myDialog = Dialog(this)
+                    myDialog.setContentView(OpenCreateRoomDialog)
+                    myDialog.setCancelable(true)
+                    myDialog.window?.setBackgroundDrawable(ColorDrawable(Color.WHITE))
+                    myDialog.show()
+                return true;
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 }

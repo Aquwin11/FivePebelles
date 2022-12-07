@@ -562,8 +562,6 @@ class SinglePlayerGameMode : AppCompatActivity() {
 
     private fun reset() {
         SwitchCounter.text="5"
-        /*player1TV.text ="Player 1 : $player1"
-        player2TV.text ="Player 2 : $player2"*/
         player1Value.text="X"
         player2Value.text="O"
         player1.clear()
@@ -573,6 +571,8 @@ class SinglePlayerGameMode : AppCompatActivity() {
         Player1Turn.isChecked=true
         Player2Turn.isChecked=false
         counterCount=1
+        Player1Switch.isEnabled=false
+        Player2Switch.isEnabled=false
         for(i in 1..36)
         {
             var buttonselected:Button?
