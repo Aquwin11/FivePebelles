@@ -94,6 +94,8 @@ class Multiplayer : AppCompatActivity() {
                             {
                                 FirebaseDatabase.getInstance().reference.child("codes").push().setValue(code)
                                 isValueAvailable(snapshot, code)
+                                FirebaseDatabase.getInstance().reference. child(code).child("Player1").push().setValue(
+                                    saveName)
                                 checkTemp=false
                                 Handler().postDelayed({
                                     accepted()
@@ -149,6 +151,8 @@ class Multiplayer : AppCompatActivity() {
                                 codeFound=true
                                 //JoinButton.visibility = View.INVISIBLE
                                 accepted()
+                                FirebaseDatabase.getInstance().reference. child(code).child("Player2").push().setValue(
+                                    saveName)
                                 Toast.makeText(this@Multiplayer, "Please Wait. Joining the Room", Toast.LENGTH_SHORT).show()
                             }
                             else

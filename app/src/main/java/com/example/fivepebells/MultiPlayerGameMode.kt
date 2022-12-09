@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Debug
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.RadioButton
@@ -80,6 +81,9 @@ class MultiPlayerGameMode : AppCompatActivity() {
     var player2=ArrayList<Int>()
     var emptyCell=ArrayList<Int>()
     var activeUser =1
+    var newDataNameArray1 :String =""
+    var newDataNameArray2 :String =""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_player_game_mode)
@@ -142,6 +146,11 @@ class MultiPlayerGameMode : AppCompatActivity() {
         Player2Switch.visibility=View.INVISIBLE
         player1Turn.isChecked = !Myturn
         player2Turn.isChecked = Myturn
+
+
+
+
+
         FirebaseDatabase.getInstance().reference.child("data").child(code).addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
 
@@ -214,6 +223,75 @@ class MultiPlayerGameMode : AppCompatActivity() {
         }
         Player1Switch.setOnClickListener{
             switch()
+        }
+
+        if(codeMaker)
+        {
+            FirebaseDatabase.getInstance().reference.child(code).child("Player1").get().addOnSuccessListener{
+                Log.i("firebase","Got value ${it.value}")
+                val nameHolder = it.getValue().toString()
+                val DataNameArray: List<String> = nameHolder.split("=")
+                newDataNameArray1= DataNameArray[1].replace("}","")
+                println("Database Check " + newDataNameArray1)
+                player1TV.text = newDataNameArray1
+            }.addOnFailureListener{
+                Log.e("firebase", "Error getting data", it)
+            }
+            FirebaseDatabase.getInstance().reference.child(code).child("Player2").addChildEventListener(object :ChildEventListener{
+                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                    FirebaseDatabase.getInstance().reference.child(code).child("Player2").get().addOnSuccessListener{
+                        Log.i("firebase","Got value ${it.value}")
+                        val nameHolder = it.getValue().toString()
+                        val DataNameArray: List<String> = nameHolder.split("=")
+                        newDataNameArray2= DataNameArray[1].replace("}","")
+                        player2TV.text = newDataNameArray2
+                        println("Database Check2 " + newDataNameArray2)
+                    }.addOnFailureListener{
+                        Log.e("firebase", "Error getting data", it)
+                    }
+                }
+
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onChildRemoved(snapshot: DataSnapshot) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+        }
+        else
+        {
+            FirebaseDatabase.getInstance().reference.child(code).child("Player1").get().addOnSuccessListener{
+                Log.i("firebase","Got value2 ${it.value}")
+                val nameHolder = it.getValue().toString()
+                val DataNameArray: List<String> = nameHolder.split("=")
+                newDataNameArray1= DataNameArray[1].replace("}","")
+                println("Database2 Check " + newDataNameArray1)
+                player2TV.text = newDataNameArray1
+            }.addOnFailureListener{
+                Log.e("firebase", "Error getting data", it)
+            }
+            FirebaseDatabase.getInstance().reference.child(code).child("Player2").get().addOnSuccessListener{
+                Log.i("firebase","Got value2 ${it.value}")
+                val nameHolder = it.getValue().toString()
+                val DataNameArray: List<String> = nameHolder.split("=")
+                newDataNameArray2= DataNameArray[1].replace("}","")
+                player1TV.text = "$newDataNameArray2 : $player1count"
+                println("Database2 Check2 " + newDataNameArray2)
+            }.addOnFailureListener{
+                Log.e("firebase", "Error getting data", it)
+            }
+
         }
     }
 
@@ -479,8 +557,17 @@ class MultiPlayerGameMode : AppCompatActivity() {
             }
             buttonselected.isEnabled=true
             buttonselected.text=""
-            player1TV.text = "Player 1: $player1count"
-            player2TV.text = "Player 2: $player2count"
+            if(codeMaker)
+            {
+                player1TV.text = "$newDataNameArray1: $player1count"
+                player2TV.text = "$newDataNameArray2 $player2count"
+            }
+            else
+            {
+                player1TV.text = "$newDataNameArray2: $player1count"
+                player2TV.text = "$newDataNameArray1: $player2count"
+            }
+
             Myturn= codeMaker
             if(codeMaker)
             {
@@ -494,29 +581,30 @@ class MultiPlayerGameMode : AppCompatActivity() {
         Handler().postDelayed({Reset.isEnabled=true},2000)
     }
     private fun checkForWinner(): Int {
-        if((player1.contains(1) && player1.contains(2) && player1.contains(3) && player1.contains(4) && player1.contains(5))||(player1.contains(2) && player1.contains(3) && player1.contains(4) && player1.contains(5) && player1.contains(6))
-            || player1.contains(7) && player1.contains(8) && player1.contains(9) && player1.contains(10) && player1.contains(11) || player1.contains(8) && player1.contains(9) && player1.contains(10) && player1.contains(11) && player1.contains(12)
-            || player1.contains(13) && player1.contains(14) && player1.contains(15) && player1.contains(16) && player1.contains(17) || player1.contains(18) && player1.contains(14) && player1.contains(15) && player1.contains(16) && player1.contains(17)
-            || player1.contains(19) && player1.contains(20) && player1.contains(21) && player1.contains(22) && player1.contains(23) || player1.contains(20) && player1.contains(21) && player1.contains(22) && player1.contains(23) && player1.contains(24)
-            || player1.contains(25) && player1.contains(26) && player1.contains(27) && player1.contains(28) && player1.contains(29) || player1.contains(30) && player1.contains(26) && player1.contains(27) && player1.contains(28) && player1.contains(29)
-            || player1.contains(31) && player1.contains(32) && player1.contains(33) && player1.contains(34) && player1.contains(35) || player1.contains(36) && player1.contains(32) && player1.contains(33) && player1.contains(34) && player1.contains(35)
-            || player1.contains(1) && player1.contains(7) && player1.contains(13) && player1.contains(19) && player1.contains(25) || player1.contains(31) && player1.contains(7) && player1.contains(13) && player1.contains(19) && player1.contains(25)
-            || player1.contains(2) && player1.contains(8) && player1.contains(14) && player1.contains(20) && player1.contains(26) || player1.contains(32) && player1.contains(8) && player1.contains(14) && player1.contains(20) && player1.contains(26)
-            || player1.contains(3) && player1.contains(9) && player1.contains(15) && player1.contains(21) && player1.contains(27) || player1.contains(33) && player1.contains(9) && player1.contains(15) && player1.contains(21) && player1.contains(27)
-            || player1.contains(4) && player1.contains(10) && player1.contains(16) && player1.contains(22) && player1.contains(28) || player1.contains(34) && player1.contains(10) && player1.contains(16) && player1.contains(22) && player1.contains(28)
-            || player1.contains(5) && player1.contains(11) && player1.contains(17) && player1.contains(23) && player1.contains(29) || player1.contains(35) && player1.contains(11) && player1.contains(17) && player1.contains(23) && player1.contains(29)
-            || player1.contains(6) && player1.contains(12) && player1.contains(18) && player1.contains(24) && player1.contains(30) || player1.contains(36) && player1.contains(12) && player1.contains(18) && player1.contains(24) && player1.contains(30)
-            || player1.contains(1) && player1.contains(8) && player1.contains(15) && player1.contains(22) && player1.contains(29) || player1.contains(36) && player1.contains(8) && player1.contains(15) && player1.contains(22) && player1.contains(29)
-            || player1.contains(6) && player1.contains(11) && player1.contains(16) && player1.contains(21) && player1.contains(26) || player1.contains(31) && player1.contains(11) && player1.contains(16) && player1.contains(21) && player1.contains(26)
-            || player1.contains(2) && player1.contains(9) && player1.contains(16) && player1.contains(23) && player1.contains(30) || player1.contains(7) && player1.contains(14) && player1.contains(21) && player1.contains(28) && player1.contains(35)
-            || player1.contains(5) && player1.contains(10) && player1.contains(15) && player1.contains(20) && player1.contains(25) || player1.contains(12) && player1.contains(17) && player1.contains(22) && player1.contains(27) && player1.contains(32))
+        if((player1.contains(1) && player1.contains(2) && player1.contains(3) && player1.contains(4))||(player1.contains(2) && player1.contains(3) && player1.contains(4) && player1.contains(5) || player1.contains(3) && player1.contains(4) && player1.contains(5) && player1.contains(6))
+            || player1.contains(7) && player1.contains(8) && player1.contains(9) && player1.contains(10)|| player1.contains(8) && player1.contains(9) && player1.contains(10) && player1.contains(11) || player1.contains(9) && player1.contains(10) && player1.contains(11) && player1.contains(12)
+            || player1.contains(13) && player1.contains(14) && player1.contains(15) && player1.contains(16) || player1.contains(14) && player1.contains(15) && player1.contains(16) && player1.contains(17) || player1.contains(15) && player1.contains(16) && player1.contains(17) && player1.contains(18)
+            || player1.contains(19) && player1.contains(20) && player1.contains(21) && player1.contains(22) || player1.contains(21) && player1.contains(22) && player1.contains(23) && player1.contains(20) || player1.contains(21) && player1.contains(22) && player1.contains(23) && player1.contains(24)
+            || player1.contains(25) && player1.contains(26) && player1.contains(27) && player1.contains(28) || player1.contains(26) && player1.contains(27) && player1.contains(28) && player1.contains(29) || player1.contains(30) && player1.contains(27) && player1.contains(28) && player1.contains(29)
+            || player1.contains(31) && player1.contains(32) && player1.contains(33) && player1.contains(34) || player1.contains(32) && player1.contains(33) && player1.contains(34) && player1.contains(35) || player1.contains(36) && player1.contains(33) && player1.contains(34) && player1.contains(35)
+            || player1.contains(1) && player1.contains(7) && player1.contains(13) && player1.contains(19) || player1.contains(31) && player1.contains(13) && player1.contains(19) && player1.contains(25) || player1.contains(7) && player1.contains(13) && player1.contains(19) && player1.contains(25)
+            || player1.contains(2) && player1.contains(8) && player1.contains(14) && player1.contains(20) || player1.contains(8) && player1.contains(14) && player1.contains(20) && player1.contains(26) || player1.contains(32) && player1.contains(14) && player1.contains(20) && player1.contains(26)
+            || player1.contains(3) && player1.contains(9) && player1.contains(15) && player1.contains(21) || player1.contains(9) && player1.contains(15) && player1.contains(21) && player1.contains(27) || player1.contains(33) && player1.contains(15) && player1.contains(21) && player1.contains(27)
+            || player1.contains(4) && player1.contains(10) && player1.contains(16) && player1.contains(22) || player1.contains(10) && player1.contains(16) && player1.contains(22) && player1.contains(28) || player1.contains(34) && player1.contains(16) && player1.contains(22) && player1.contains(28)
+            || player1.contains(5) && player1.contains(11) && player1.contains(17) && player1.contains(23) || player1.contains(11) && player1.contains(17) && player1.contains(23) && player1.contains(29) || player1.contains(35) && player1.contains(17) && player1.contains(23) && player1.contains(29)
+            || player1.contains(6) && player1.contains(12) && player1.contains(18) && player1.contains(24) || player1.contains(12) && player1.contains(18) && player1.contains(24) && player1.contains(30) || player1.contains(36) && player1.contains(18) && player1.contains(24) && player1.contains(30)
+            || player1.contains(1) && player1.contains(8) && player1.contains(15) && player1.contains(22)  || player1.contains(8) && player1.contains(15) && player1.contains(22) && player1.contains(29) || player1.contains(36) && player1.contains(15) && player1.contains(22) && player1.contains(29)
+            || player1.contains(6) && player1.contains(11) && player1.contains(16) && player1.contains(21) || player1.contains(11) && player1.contains(16) && player1.contains(21) && player1.contains(26) || player1.contains(31) && player1.contains(16) && player1.contains(21) && player1.contains(26)
+            || player1.contains(2) && player1.contains(9) && player1.contains(16) && player1.contains(23) || player1.contains(30) && player1.contains(9) && player1.contains(16) && player1.contains(23)  || player1.contains(14) && player1.contains(21) && player1.contains(28) && player1.contains(35) || player1.contains(7) && player1.contains(14) && player1.contains(21) && player1.contains(28)
+            || player1.contains(5) && player1.contains(10) && player1.contains(15) && player1.contains(20)|| player1.contains(10) && player1.contains(15) && player1.contains(20) && player1.contains(25) || player1.contains(12) && player1.contains(17) && player1.contains(22) && player1.contains(27) || player1.contains(17) && player1.contains(22) && player1.contains(27) && player1.contains(32)
+            || player1.contains(3) && player1.contains(20) && player1.contains(27) && player1.contains(34)|| player1.contains(18) && player1.contains(23) && player1.contains(28) && player1.contains(33) || player1.contains(4) && player1.contains(9) && player1.contains(14) && player1.contains(19) || player1.contains(3) && player1.contains(10) && player1.contains(17) && player1.contains(24))
         {
             player1count+=1
             buttonDisable()
             disableReset()
             val build = AlertDialog.Builder(this)
             build.setTitle("Game Over")
-            build.setMessage("Player 1 Wins \n \n " + "Do you want to play again")
+            build.setMessage("You Won \n \n " + "Do you want to play again")
             build.setPositiveButton("ok"){
                     dialog,which->
                 reset()
@@ -527,34 +615,35 @@ class MultiPlayerGameMode : AppCompatActivity() {
                 RemoveCode()
                 exitProcess(1)
             }
-            Handler().postDelayed(Runnable { build.show() },2000)
+            Handler().postDelayed(Runnable { build.show() },500)
             //println("Player1 won the game")
             return 1
 
         }
-        else if ((player2.contains(1) && player2.contains(2) && player2.contains(3) && player2.contains(4) && player2.contains(5))||(player2.contains(2) && player2.contains(3) && player2.contains(4) && player2.contains(5) && player2.contains(6))
-            || player2.contains(7) && player2.contains(8) && player2.contains(9) && player2.contains(10) && player2.contains(11) || player2.contains(8) && player2.contains(9) && player2.contains(10) && player2.contains(11) && player2.contains(12)
-            || player2.contains(13) && player2.contains(14) && player2.contains(15) && player2.contains(16) && player2.contains(17) || player2.contains(18) && player2.contains(14) && player2.contains(15) && player2.contains(16) && player2.contains(17)
-            || player2.contains(19) && player2.contains(20) && player2.contains(21) && player2.contains(22) && player2.contains(23) || player2.contains(20) && player2.contains(21) && player2.contains(22) && player2.contains(23) && player2.contains(24)
-            || player2.contains(25) && player2.contains(26) && player2.contains(27) && player2.contains(28) && player2.contains(29) || player2.contains(30) && player2.contains(26) && player2.contains(27) && player2.contains(28) && player2.contains(29)
-            || player2.contains(31) && player2.contains(32) && player2.contains(33) && player2.contains(34) && player2.contains(35) || player2.contains(36) && player2.contains(32) && player2.contains(33) && player2.contains(34) && player2.contains(35)
-            || player2.contains(1) && player2.contains(7) && player2.contains(13) && player2.contains(19) && player2.contains(25) || player2.contains(31) && player2.contains(7) && player2.contains(13) && player2.contains(19) && player2.contains(25)
-            || player2.contains(2) && player2.contains(8) && player2.contains(14) && player2.contains(20) && player2.contains(26) || player2.contains(32) && player2.contains(8) && player2.contains(14) && player2.contains(20) && player2.contains(26)
-            || player2.contains(3) && player2.contains(9) && player2.contains(15) && player2.contains(21) && player2.contains(27) || player2.contains(33) && player2.contains(9) && player2.contains(15) && player2.contains(21) && player2.contains(27)
-            || player2.contains(4) && player2.contains(10) && player2.contains(16) && player2.contains(22) && player2.contains(28) || player2.contains(34) && player2.contains(10) && player2.contains(16) && player2.contains(22) && player2.contains(28)
-            || player2.contains(5) && player2.contains(11) && player2.contains(17) && player2.contains(23) && player2.contains(29) || player2.contains(35) && player2.contains(11) && player2.contains(17) && player2.contains(23) && player2.contains(29)
-            || player2.contains(6) && player2.contains(12) && player2.contains(18) && player2.contains(24) && player2.contains(30) || player2.contains(36) && player2.contains(12) && player2.contains(18) && player2.contains(24) && player2.contains(30)
-            || player2.contains(1) && player2.contains(8) && player2.contains(15) && player2.contains(22) && player2.contains(29) || player2.contains(36) && player2.contains(8) && player2.contains(15) && player2.contains(22) && player2.contains(29)
-            || player2.contains(6) && player2.contains(11) && player2.contains(16) && player2.contains(21) && player2.contains(26) || player2.contains(31) && player2.contains(11) && player2.contains(16) && player2.contains(21) && player2.contains(26)
-            || player2.contains(2) && player2.contains(9) && player2.contains(16) && player2.contains(23) && player2.contains(30) || player2.contains(7) && player2.contains(14) && player2.contains(21) && player2.contains(28) && player2.contains(35)
-            || player2.contains(5) && player2.contains(10) && player2.contains(15) && player2.contains(20) && player2.contains(25) || player2.contains(12) && player2.contains(17) && player2.contains(22) && player2.contains(27) && player2.contains(32)){
+        else if ((player2.contains(1) && player2.contains(2) && player2.contains(3) && player2.contains(4))||(player2.contains(2) && player2.contains(3) && player2.contains(4) && player2.contains(5) || player2.contains(3) && player2.contains(4) && player2.contains(5) && player2.contains(6))
+            || player2.contains(7) && player2.contains(8) && player2.contains(9) && player2.contains(10)|| player2.contains(8) && player2.contains(9) && player2.contains(10) && player2.contains(11) || player2.contains(9) && player2.contains(10) && player2.contains(11) && player2.contains(12)
+            || player2.contains(13) && player2.contains(14) && player2.contains(15) && player2.contains(16) || player2.contains(14) && player2.contains(15) && player2.contains(16) && player2.contains(17) || player2.contains(15) && player2.contains(16) && player2.contains(17) && player2.contains(18)
+            || player2.contains(19) && player2.contains(20) && player2.contains(21) && player2.contains(22) || player2.contains(21) && player2.contains(22) && player2.contains(23) && player2.contains(20) || player2.contains(21) && player2.contains(22) && player2.contains(23) && player2.contains(24)
+            || player2.contains(25) && player2.contains(26) && player2.contains(27) && player2.contains(28) || player2.contains(26) && player2.contains(27) && player2.contains(28) && player2.contains(29) || player2.contains(30) && player2.contains(27) && player2.contains(28) && player2.contains(29)
+            || player2.contains(31) && player2.contains(32) && player2.contains(33) && player2.contains(34) || player2.contains(32) && player2.contains(33) && player2.contains(34) && player2.contains(35) || player2.contains(36) && player2.contains(33) && player2.contains(34) && player2.contains(35)
+            || player2.contains(1) && player2.contains(7) && player2.contains(13) && player2.contains(19) || player2.contains(31) && player2.contains(13) && player2.contains(19) && player2.contains(25) || player2.contains(7) && player2.contains(13) && player2.contains(19) && player2.contains(25)
+            || player2.contains(2) && player2.contains(8) && player2.contains(14) && player2.contains(20) || player2.contains(8) && player2.contains(14) && player2.contains(20) && player2.contains(26) || player2.contains(32) && player2.contains(14) && player2.contains(20) && player2.contains(26)
+            || player2.contains(3) && player2.contains(9) && player2.contains(15) && player2.contains(21) || player2.contains(9) && player2.contains(15) && player2.contains(21) && player2.contains(27) || player2.contains(33) && player2.contains(15) && player2.contains(21) && player2.contains(27)
+            || player2.contains(4) && player2.contains(10) && player2.contains(16) && player2.contains(22) || player2.contains(10) && player2.contains(16) && player2.contains(22) && player2.contains(28) || player2.contains(34) && player2.contains(16) && player2.contains(22) && player2.contains(28)
+            || player2.contains(5) && player2.contains(11) && player2.contains(17) && player2.contains(23) || player2.contains(11) && player2.contains(17) && player2.contains(23) && player2.contains(29) || player2.contains(35) && player2.contains(17) && player2.contains(23) && player2.contains(29)
+            || player2.contains(6) && player2.contains(12) && player2.contains(18) && player2.contains(24) || player2.contains(12) && player2.contains(18) && player2.contains(24) && player2.contains(30) || player2.contains(36) && player2.contains(18) && player2.contains(24) && player2.contains(30)
+            || player2.contains(1) && player2.contains(8) && player2.contains(15) && player2.contains(22)  || player2.contains(8) && player2.contains(15) && player2.contains(22) && player2.contains(29) || player2.contains(36) && player2.contains(15) && player2.contains(22) && player2.contains(29)
+            || player2.contains(6) && player2.contains(11) && player2.contains(16) && player2.contains(21) || player2.contains(11) && player2.contains(16) && player2.contains(21) && player2.contains(26) || player2.contains(31) && player2.contains(16) && player2.contains(21) && player2.contains(26)
+            || player2.contains(2) && player2.contains(9) && player2.contains(16) && player2.contains(23) || player2.contains(30) && player2.contains(9) && player2.contains(16) && player2.contains(23)  || player2.contains(14) && player2.contains(21) && player2.contains(28) && player2.contains(35) || player2.contains(7) && player2.contains(14) && player2.contains(21) && player2.contains(28)
+            || player2.contains(5) && player2.contains(10) && player2.contains(15) && player2.contains(20)|| player2.contains(10) && player2.contains(15) && player2.contains(20) && player2.contains(25) || player2.contains(12) && player2.contains(17) && player2.contains(22) && player2.contains(27) || player2.contains(17) && player2.contains(22) && player2.contains(27) && player2.contains(32)
+            || player2.contains(3) && player2.contains(20) && player2.contains(27) && player2.contains(34)|| player2.contains(18) && player2.contains(23) && player2.contains(28) && player2.contains(33) || player2.contains(4) && player2.contains(9) && player2.contains(14) && player2.contains(19) || player2.contains(3) && player2.contains(10) && player2.contains(17) && player2.contains(24)){
 
             player2count+=1
             buttonDisable()
             //disableReset()
             val build = AlertDialog.Builder(this)
             build.setTitle("Game Over")
-            build.setMessage("Player 2 Wins \n \n " + "Do you want to play again")
+            build.setMessage("Your Opponent Won \n \n " + "Do you want to play again")
             build.setPositiveButton("ok"){
                     dialog,which->
                 reset()
@@ -565,7 +654,7 @@ class MultiPlayerGameMode : AppCompatActivity() {
                 exitProcess(1)
                 RemoveCode()
             }
-            Handler().postDelayed(Runnable { build.show() },200)
+            Handler().postDelayed(Runnable { build.show() },500)
             return 1
         }
         else if(emptyCell.contains(1) && emptyCell.contains(2) && emptyCell.contains(3) && emptyCell.contains(4) && emptyCell.contains(5) && emptyCell.contains(6)
@@ -648,8 +737,16 @@ class MultiPlayerGameMode : AppCompatActivity() {
             }
             buttonSelected.isEnabled = true
             buttonSelected.text=""
-            player1TV.text="Player 1 : $player1count"
-            player2TV.text="Player 2 : $player2count"
+            if(codeMaker)
+            {
+                player1TV.text = "$newDataNameArray1: $player1count"
+                player2TV.text = "$newDataNameArray2 $player2count"
+            }
+            else
+            {
+                player1TV.text = "$newDataNameArray2: $player1count"
+                player2TV.text = "$newDataNameArray1: $player2count"
+            }
 
 
         }

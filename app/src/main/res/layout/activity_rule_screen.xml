@@ -31,7 +31,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
-          android:text="FIVE PEBELLS"
+          android:text="Four Pebbles"
           android:textAlignment="center"
           android:textColor="@color/black"
           android:textSize="40sp"
@@ -41,7 +41,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_centerInParent="true"
-          android:text="RULES"
+          android:text="Rules"
           android:textAlignment="center"
           android:textColor="@color/black"
           android:textSize="35sp"
@@ -54,25 +54,25 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:backgroundTint="@color/white"
-          android:padding="20sp"
+          android:padding="10sp"
           android:textStyle="italic"
           android:justificationMode="inter_word"
-          android:text="* The game involves 2 players placing their respective symbols in a 6x6 grid. The player who manages to place 5 of their symbols in horizontal/vertical/diagonal row wins the game. If either player fails to do so, the game ends in a draw."
+          android:text="* The game involves 2 players placing their respective symbols in a 6x6 grid. The player who manages to place 4 of their symbols in horizontal/vertical/diagonal row wins the game. If either player fails to do so, the game ends in a draw."
           android:textColor="@color/white"
           android:textColorHighlight="@color/black"
-          android:textSize="24sp"/>
+          android:textSize="20sp"/>
 
       <TextView
           android:id="@+id/RuleTwo"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="5sp"
-          android:padding="20sp"
+          android:padding="10sp"
           android:justificationMode="inter_word"
           android:text="* The players are allowed to switch their symbols after a certain amount of moves"
           android:textColor="@color/white"
           android:textColorHighlight="@color/white"
-          android:textSize="24sp"
+          android:textSize="20sp"
           android:textStyle="italic"/>
 
       <TextView
@@ -80,13 +80,14 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="5sp"
-          android:padding="20sp"
           android:justificationMode="inter_word"
+          android:padding="10sp"
           android:text="* If a player chooses to swap his symbols with his opponent, they lose their current turn and the opponent gets to play again. "
           android:textColor="@color/white"
           android:textColorHighlight="@color/white"
-          android:textSize="24sp"
-          android:textStyle="italic"/>
+          android:textSize="20sp"
+          android:textStyle="italic" />
+
       <TextView
           android:id="@+id/TipsTitleText"
           android:layout_width="match_parent"
@@ -109,12 +110,12 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="5sp"
-          android:padding="20sp"
+          android:padding="10sp"
           android:justificationMode="inter_word"
           android:text="* It is advisable to focus on the middle 4 squares to have a higher chance of winning."
           android:textColor="@color/white"
           android:textColorHighlight="@color/white"
-          android:textSize="24sp"
+          android:textSize="20sp"
           android:textStyle="italic"/>
 
 
@@ -123,12 +124,12 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="5sp"
-          android:padding="20sp"
+          android:padding="10sp"
           android:justificationMode="inter_word"
           android:text="* Remember, you can use the 'Swap' button to trick your opponent for your advantage."
           android:textColor="@color/white"
           android:textColorHighlight="@color/white"
-          android:textSize="24sp"
+          android:textSize="20sp"
           android:textStyle="italic"/>
     </LinearLayout>
   </ScrollView>
