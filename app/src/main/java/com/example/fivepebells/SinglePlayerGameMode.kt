@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -153,6 +154,10 @@ class SinglePlayerGameMode : AppCompatActivity() {
             val HomeIntent = Intent(this, MainActivity::class.java)
             startActivity(HomeIntent)
         }*/
+        val HomeButton = findViewById<ImageButton>(R.id.HomeButton)
+        HomeButton.setOnClickListener {
+            super.onBackPressed()
+        }
 
     }
 

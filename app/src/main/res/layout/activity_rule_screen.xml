@@ -6,17 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".RuleScreen"
     android:background="@color/teal_200">
-  <Button
-      android:id="@+id/HomeButton"
-      android:layout_width="35dp"
-      android:layout_height="35dp"
 
-      android:textSize="10sp"
-      android:backgroundTint="@color/teal_700"/>
   <ScrollView
       android:layout_width="fill_parent"
       android:layout_height="fill_parent">
+
     <LinearLayout
+
         android:id="@+id/RuleContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,6 +22,14 @@
         android:background="@color/teal_200"
         android:orientation="vertical"
         android:paddingTop="0dp">
+      <ImageButton
+          android:id="@+id/HomeButton"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:backgroundTint="@color/teal_200"
+          android:outlineSpotShadowColor="@color/teal_200"
+          android:src="@drawable/ic_baseline_arrow_back_24"
+          android:textSize="10sp"/>
       <TextView
           android:id="@+id/MultipleGameTitleText"
           android:layout_width="match_parent"
