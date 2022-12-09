@@ -10,16 +10,29 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 
+
+var saveName:String = ""
+var LightTheme=false
+var MuteAduio = false
+var VolumeValue:Int=0
 class MainActivity : AppCompatActivity() {
+    lateinit var sqLiteManager: SQLiteManager
+    lateinit var UserName:TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        sqLiteManager = SQLiteManager(this)
+        showAllUsers()
         /*Button button = findViewById (R.id.SinglePlayerButton)
         button.setOnClickListener(new View.OnClickListener)
         {
 
         }*/
+        println("saveName $saveName")
+        UserName = findViewById(R.id.UserNameText)
+        UserName.text = saveName
         val SinglePlayerbutton = findViewById<Button>(R.id.SinglePlayerButton)
         SinglePlayerbutton.setOnClickListener {
             val Intent = Intent(this, SinglePlayerScreen::class.java)
@@ -41,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -52,15 +66,22 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.menuButton -> {
 
-                    val OpenCreateRoomDialog = layoutInflater.inflate(R.layout.layout_dialog_box, null)
-                    val myDialog = Dialog(this)
-                    myDialog.setContentView(OpenCreateRoomDialog)
-                    myDialog.setCancelable(true)
-                    myDialog.window?.setBackgroundDrawable(ColorDrawable(Color.WHITE))
-                    myDialog.show()
+                val SettingsIntent = Intent(this, UserSettings::class.java)
+                startActivity(SettingsIntent)
+                showAllUsers()
                 return true;
             }
             else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun showAllUsers(){
+        val users = sqLiteManager.readAllUsers()
+        users.forEach {
+            val int = users[0].userid
+            saveName = users[0].username
+            println("Just check $saveName , $int")
+            VolumeValue = users[0].volumeProgress
         }
     }
 }

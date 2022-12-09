@@ -12,13 +12,13 @@ class SinglePlayerScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_player_screen)
 
-        val HomeButton = findViewById<Button>(R.id.HomeButton)
+        /*val HomeButton = findViewById<Button>(R.id.HomeButton)
         HomeButton.setOnClickListener {
             val HomeIntent = Intent(this, MainActivity::class.java)
             startActivity(HomeIntent)
 
 
-        }
+        }*/
 
         val SingleGameButton = findViewById<Button>(R.id.PVP)
         SingleGameButton.setOnClickListener {

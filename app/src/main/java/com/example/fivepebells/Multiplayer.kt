@@ -40,11 +40,11 @@ class Multiplayer : AppCompatActivity() {
         codeET = findViewById(R.id.CreateRoomTextView)
         CreateButton = findViewById(R.id.CreateRoom)
 
-        val HomeButton = findViewById<Button>(R.id.HomeButton)
+        /*val HomeButton = findViewById<Button>(R.id.HomeButton)
         HomeButton.setOnClickListener {
             val HomeIntent = Intent(this, MainActivity::class.java)
             startActivity(HomeIntent)
-        }
+        }*/
         /* val CreateRoomDialog = findViewById<Button>(R.id.CreateRoom)
         CreateRoomDialog.setOnClickListener{
             val OpenCreateRoomDialog = layoutInflater.inflate(R.layout.layout_dialog_box,null)
