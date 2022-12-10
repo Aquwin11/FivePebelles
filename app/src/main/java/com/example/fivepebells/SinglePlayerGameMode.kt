@@ -1,6 +1,7 @@
 package com.example.fivepebells
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.net.IpSecManager.ResourceUnavailableException
 import androidx.appcompat.app.AppCompatActivity
@@ -88,6 +89,7 @@ class SinglePlayerGameMode : AppCompatActivity() {
         player2Value=findViewById(R.id.Player2Character)
         player1Value=findViewById(R.id.Player1Character)
         Reset=findViewById(R.id.SingleResetButton)
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         BoxBtn1=findViewById(R.id.Box1)
         BoxBtn1=findViewById(R.id.Box1)
         BoxBtn2=findViewById(R.id.Box2)

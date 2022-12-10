@@ -90,9 +90,12 @@ class Multiplayer : AppCompatActivity() {
                                 JoinButton.visibility = View.VISIBLE
                                 codeET.visibility = View.VISIBLE
                                 loadingProgressBar.visibility = View.GONE
+                                Toast.makeText(this@Multiplayer, "This Room already created", Toast.LENGTH_SHORT).show()
+
                             }
                             else
                             {
+                                codeET.text = null
                                 FirebaseDatabase.getInstance().reference.child("codes").push().setValue(code)
                                 isValueAvailable(snapshot, code)
                                 FirebaseDatabase.getInstance().reference. child(code).child("Player1").push().setValue(

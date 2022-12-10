@@ -1,9 +1,11 @@
 package com.example.fivepebells
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -17,14 +19,21 @@ var saveName:String = ""
 var LightTheme=false
 var MuteAduio = false
 var VolumeValue:Int=0
+
 class MainActivity : AppCompatActivity() {
     lateinit var sqLiteManager: SQLiteManager
     lateinit var UserName:TextView
+    lateinit var mediaPlayer:MediaPlayer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         sqLiteManager = SQLiteManager(this)
         showAllUsers()
+
+        mediaPlayer = MediaPlayer.create(this,R.raw.background)
+        mediaPlayer.isLooping = true
+        mediaPlayer.start()
         /*Button button = findViewById (R.id.SinglePlayerButton)
         button.setOnClickListener(new View.OnClickListener)
         {
@@ -52,8 +61,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(RulesIntent)
 
         }
-
-
 
     }
 

@@ -1,6 +1,9 @@
 package com.example.fivepebells
 
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -8,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.sqlliteexample.UserModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlin.math.max
 
 
 class UserSettings : AppCompatActivity() {
@@ -25,6 +29,7 @@ class UserSettings : AppCompatActivity() {
     var CanChange:Boolean=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        lateinit var audioManager: AudioManager
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_settings)
         sqLiteManager = SQLiteManager(this)
@@ -52,12 +57,49 @@ class UserSettings : AppCompatActivity() {
                 UserNameEditText.text = null
                 EditButton.text = "Edit Username"
 
-                Toast.makeText(this, "Saved" + saveName, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Saved" + saveName, Toast.LENGTH_SHORT).show()
             }
 
         }
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val maxvalome:Int = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        val currentVolume:Int = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
         AudioSeeker = findViewById(R.id.VolumeSeeker)
-        AudioSeeker.progress = VolumeValue
+        //AudioSeeker.progress = VolumeValue
+        var startpoint=0
+        var endpoint=0
+
+        AudioSeeker.progress = currentVolume
+        AudioSeeker?.setOnSeekBarChangeListener(object :SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                VolumeValue = AudioSeeker.progress
+                println("VolumeValue $VolumeValue" )
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, VolumeValue,0)
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+                if(p0!=null)
+                {
+                    startpoint = p0.progress
+                    println("startpoint $startpoint")
+                    println("VolumeValue $VolumeValue" )
+                }
+            }
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+                if(p0!=null)
+                {
+                    endpoint = p0.progress
+                    println("endpoint $endpoint")
+                    var difference = endpoint-startpoint
+                    println(" difference $difference")
+                    println("VolumeValue $VolumeValue" )
+
+                }
+            }
+        })
+        AudioSeeker.max = maxvalome;
+
         /*LightThemeButton = findViewById(R.id.LightThemeSwitch)
         LightThemeButton.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
