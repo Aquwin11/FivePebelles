@@ -462,6 +462,8 @@ class SinglePlayerGameMode : AppCompatActivity() {
                 Handler().postDelayed({reset()},500)
             }
         }
+        Player1Turn.isChecked=true
+        Player2Turn.isChecked=false
     }
 
 
