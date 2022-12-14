@@ -16,8 +16,6 @@ import android.widget.TextView
 
 
 var saveName:String = ""
-var LightTheme=false
-var MuteAduio = false
 var VolumeValue:Int=0
 
 class MainActivity : AppCompatActivity() {
