@@ -17,21 +17,39 @@ import android.widget.TextView
 
 var saveName:String = ""
 var VolumeValue:Int=0
+lateinit var mediaPlayer:MediaPlayer
+object MusicManagerObj{
+    fun startMusic(context: Context) {
+        mediaPlayer = MediaPlayer.create(context, R.raw.background)
+        mediaPlayer?.isLooping = true
+        mediaPlayer?.start()
+    }
+    fun pauseMusic() {
+        mediaPlayer?.pause()
+    }
 
+    fun resumeMusic() {
+        mediaPlayer?.start()
+    }
+
+    fun stopMusic() {
+        mediaPlayer?.release()
+    }
+}
 class MainActivity : AppCompatActivity() {
     lateinit var sqLiteManager: SQLiteManager
     lateinit var UserName:TextView
-    lateinit var mediaPlayer:MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         sqLiteManager = SQLiteManager(this)
         showAllUsers()
+        MusicManagerObj.startMusic(this)
 
-        mediaPlayer = MediaPlayer.create(this,R.raw.background)
+        /*mediaPlayer = MediaPlayer.create(this,R.raw.background)
         mediaPlayer.isLooping = true
-        mediaPlayer.start()
+        mediaPlayer.start()*/
         /*Button button = findViewById (R.id.SinglePlayerButton)
         button.setOnClickListener(new View.OnClickListener)
         {
@@ -85,8 +103,25 @@ class MainActivity : AppCompatActivity() {
         users.forEach {
             val int = users[0].userid
             saveName = users[0].username
-            println("Just check $saveName , $int")
             VolumeValue = users[0].volumeProgress
+            println("Just check $saveName , $int,$VolumeValue")
         }
+    }
+    override fun onPause() {
+        super.onPause()
+        // Pause music when the activity is not in the foreground
+        MusicManagerObj.pauseMusic()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Resume music playback when the activity comes back to the foreground
+        MusicManagerObj.resumeMusic()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Release the media player resources when the activity is destroyed
+        MusicManagerObj.stopMusic()
     }
 }

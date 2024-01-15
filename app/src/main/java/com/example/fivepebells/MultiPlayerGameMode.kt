@@ -476,10 +476,30 @@ class MultiPlayerGameMode : AppCompatActivity() {
 
     fun RemoveCode()
     {
-        if(codeMaker)
-        {
-            FirebaseDatabase.getInstance().reference.child("codes").child(keyValue).removeValue()
+        println("keyValue " + keyValue)
+        val database = FirebaseDatabase.getInstance()
+        val roomRef = database.getReference(code)
+
+// Remove the room and its child nodes
+        roomRef.removeValue().addOnSuccessListener {
+            // Room successfully removed
+            Log.d("Firebase", "Room successfully removed.")
+        }.addOnFailureListener {
+            // Failed to remove room
+            Log.d("Firebase", "Failed to remove room.", it)
         }
+        val codesRef = database.getReference("codes").child(keyValue)
+        codesRef.removeValue().addOnSuccessListener {
+            // Data deleted successfully
+            Log.d("Firebase", "Data deleted successfully.")
+        }.addOnFailureListener { exception ->
+            // Data could not be deleted
+            Log.e("Firebase", "Failed to delete data.", exception)
+        }
+/*        if(codeMaker)
+        {
+            FirebaseDatabase.getInstance().getReference("codes").child(keyValue).removeValue()
+        }*/
     }
 
     fun updateFirebase(cellID:Int)
@@ -487,11 +507,13 @@ class MultiPlayerGameMode : AppCompatActivity() {
         FirebaseDatabase.getInstance().reference.child("data").child(code).push().setValue(cellID)
     }
     override fun onBackPressed() {
+        println("Ckeck for error")
+        FirebaseDatabase.getInstance().reference.child("data").child(code).removeValue()
         RemoveCode()
-        if(codeMaker)
+        /*if(codeMaker)
         {
-            FirebaseDatabase.getInstance().reference.child("data").child(code).removeValue()
-        }
+
+        }*/
         exitProcess(0)
     }
     private fun reset() {

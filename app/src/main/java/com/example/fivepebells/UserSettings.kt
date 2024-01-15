@@ -37,7 +37,7 @@ class UserSettings : AppCompatActivity() {
         ExitButton = findViewById(R.id.MenuExitButton)
         UserNameTextView = findViewById(R.id.UserNameHolder)
         UserNameTextView.text = saveName
-
+        AudioSeeker = findViewById(R.id.VolumeSeeker)
         UserNameEditText = findViewById(R.id.UserNameEditText)
         FloatingButton = findViewById(R.id.floatingActionButton)
         EditButton = findViewById(R.id.EditUserNameButton)
@@ -61,10 +61,11 @@ class UserSettings : AppCompatActivity() {
             }
 
         }
+        println("VolumeValue" + VolumeValue)
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val maxvalome:Int = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-        val currentVolume:Int = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-        AudioSeeker = findViewById(R.id.VolumeSeeker)
+        val maxvalome =100
+        val currentVolume:Int = VolumeValue
+        AudioSeeker.max=maxvalome
         //AudioSeeker.progress = VolumeValue
         var startpoint=0
         var endpoint=0
@@ -74,7 +75,9 @@ class UserSettings : AppCompatActivity() {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 VolumeValue = AudioSeeker.progress
                 println("VolumeValue $VolumeValue" )
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, VolumeValue,0)
+                val volume = p1/maxvalome.toFloat()
+                mediaPlayer.setVolume(volume,volume)
+                //audioManager.(AudioManager.STREAM_MUSIC, VolumeValue,0)
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -140,6 +143,7 @@ class UserSettings : AppCompatActivity() {
             val HomeIntent = Intent(this, MainActivity::class.java)
             deleteUser()
             addUser(BufferName)
+            println("VolumeValue" + VolumeValue)
             startActivity(HomeIntent)
         }
         ExitButton.setOnClickListener {
