@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -41,7 +42,7 @@ class Multiplayer : AppCompatActivity() {
         JoinButton = findViewById<Button>(R.id.JoinRoom)
         codeET = findViewById(R.id.CreateRoomTextView)
         CreateButton = findViewById(R.id.CreateRoom)
-        
+
         val HomeButton = findViewById<ImageButton>(R.id.HomeButton)
         HomeButton.setOnClickListener {
             super.onBackPressed()
@@ -110,7 +111,7 @@ class Multiplayer : AppCompatActivity() {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
+                        Log.w("Multiplayer", "Database listener was cancelled, error: ${error.toException()}")
                     }
 
                 })
