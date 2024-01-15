@@ -1,19 +1,13 @@
 package com.example.fivepebells
 
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
-import android.net.IpSecManager.ResourceUnavailableException
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.RadioButton
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.core.os.postDelayed
 import kotlin.system.exitProcess
 
 
@@ -219,6 +213,44 @@ class SinglePlayerGameMode : AppCompatActivity() {
 
     }
 
+    fun Robot_Switch()
+    {
+        Player2Switch.isEnabled=false
+        Player1Switch.isEnabled=false
+        counterCount++
+        SwitchCounter.text="5"
+        val NewString = SwitchCounter.text
+        var NewInt = Integer.parseInt(NewString as String)
+        SwitchCounter.text = (NewInt*counterCount).toString()
+        println("Before ActivePlayer " + activeUser)
+        var templist1 = ArrayList<Int>()
+        var templist2 = ArrayList<Int>()
+        templist1=player1
+        templist2=player2
+        player1=templist2
+        player2=templist1
+        if(player1Value.text=="X")
+        {
+            player1Value.text="O"
+            player2Value.text="X"
+
+        }
+        else
+        {
+            player1Value.text="X"
+            player2Value.text="O"
+        }
+        Player1Turn.isChecked=true
+        Player2Turn.isChecked=false
+        activeUser=1
+        println("After ActivePlayer " + activeUser)
+        val text = "Bot Swap!"
+        val duration = Toast.LENGTH_SHORT
+
+        val toast = Toast.makeText(this, text, duration) // in Activity
+        toast.show()
+    }
+
     fun buttonClick(view: View){
         //println("The button click")
         if(playTurn)
@@ -392,13 +424,52 @@ class SinglePlayerGameMode : AppCompatActivity() {
     }
 
     private fun robot() {
-
-        val rnd =(1..36).random()
+        //println("Robot_CheckWinMove" + Robot_CheckWinMove())
+        //println("Robot_CheckBLockMove" + Robot_CheckBlockMove())
+        //println("CheckCenterMove" + CheckCenterPlay())
+        println("findSequence " + findPotentialSequence(player2Value.text.toString()))
+        //println("Robot_CheckSwap " + Robot_CheckSwap())
+        val NewString = SwitchCounter.text
+        var NewInt = Integer.parseInt(NewString as String)
+        println("NewInt " + NewInt)
+        if(Robot_CheckWinMove()!=0)
+        {
+            println("Robot_CheckWinMove" + Robot_CheckWinMove())
+            Robot_MakeMove(Robot_CheckWinMove())
+            println("Robot_CheckWinMove")
+        }
+        else if(Robot_CheckSwap() && NewInt==0)
+        {
+            Robot_Switch()
+            println("Robot_Switch")
+        }
+        else if(Robot_CheckBlockMove()!=0)
+        {
+            Robot_MakeMove(Robot_CheckBlockMove())
+            println("Robot_CheckBlockMove")
+        }
+        else if(CheckCenterPlay()!=0)
+        {
+            Robot_MakeMove(CheckCenterPlay())
+            println("CheckCenterPlay")
+        }
+        else if(findPotentialSequence(player2Value.text.toString())!=0 )
+        {
+            println("findSequence " + findPotentialSequence(player2Value.text.toString()))
+            Robot_MakeMove(findPotentialSequence(player2Value.text.toString()))
+            println("findPotentialSequence")
+        }
+        else
+        {
+            Robot_MakeMove(Robot_RandomMove())
+            println("Robot_RandomMove")
+        }
+        /*val rnd =(1..36).random()
         if(emptyCell.contains(rnd))
         {
             robot()
-        }
-        else{
+        }*/
+        /*else{
             val buttonSelected=when(rnd){
                 1 -> BoxBtn1
                 2->BoxBtn2
@@ -461,7 +532,7 @@ class SinglePlayerGameMode : AppCompatActivity() {
             {
                 Handler().postDelayed({reset()},500)
             }
-        }
+        }*/
         Player1Turn.isChecked=true
         Player2Turn.isChecked=false
     }
@@ -773,6 +844,344 @@ class SinglePlayerGameMode : AppCompatActivity() {
             }
         }
     }
+    fun Robot_MakeMove(index:Int)
+    {
+        val buttonSelected=when(index){
+            1 -> BoxBtn1
+            2->BoxBtn2
+            3->BoxBtn3
+            4->BoxBtn4
+            5->BoxBtn5
+            6->BoxBtn6
+            7->BoxBtn7
+            8->BoxBtn8
+            9->BoxBtn9
+            10->BoxBtn10
+            11->BoxBtn11
+            12->BoxBtn12
+            13->BoxBtn13
+            14->BoxBtn14
+            15->BoxBtn15
+            16->BoxBtn16
+            17->BoxBtn17
+            18->BoxBtn18
+            19->BoxBtn19
+            20->BoxBtn20
+            21->BoxBtn21
+            22->BoxBtn22
+            23->BoxBtn23
+            24->BoxBtn24
+            25->BoxBtn25
+            26->BoxBtn26
+            27->BoxBtn27
+            28->BoxBtn28
+            29->BoxBtn29
+            30->BoxBtn30
+            31->BoxBtn31
+            32->BoxBtn32
+            33->BoxBtn33
+            34->BoxBtn34
+            35->BoxBtn35
+            36->BoxBtn36
+            else->
+            {
+                BoxBtn1
+            }
+        }
+        emptyCell.add(index)
+
+        if(player2Value.text=="X")
+        {
+            buttonSelected.text="X"
+            buttonSelected.setTextColor(Color.parseColor("#D22BB804"))
+        }
+        else
+        {
+            buttonSelected.text="O"
+            buttonSelected.setTextColor((Color.parseColor("#EC0C0C")))
+        }
+        player2.add(index)
+        buttonSelected.isEnabled=false
+        var checkWinner=checkForWinner()
+
+        if(checkWinner==1)
+        {
+            Handler().postDelayed({reset()},500)
+        }
+        Player1Turn.isChecked=true
+        Player2Turn.isChecked=false
+    }
+
+    fun Robot_CheckWinMove():Int
+    {
+        for(index in 1..36)
+        {
+            //println("Checking Index " + index)
+            if(!emptyCell.contains(index))
+            {
+                emptyCell.add(index)
+                player2.add(index)
+                if(TempWinCheck()==1)
+                {
+                    print("Bot won")
+                    emptyCell.remove(index)
+                    player2.remove(index)
+                    return index
+                }
+                emptyCell.remove(index)
+                player2.remove(index)
+
+            }
+        }
+        return 0;
+    }
+    private fun TempWinCheck():Int
+    {
+        if((player2.contains(1) && player2.contains(2) && player2.contains(3) && player2.contains(4))||(player2.contains(2) && player2.contains(3) && player2.contains(4) && player2.contains(5) || player2.contains(3) && player2.contains(4) && player2.contains(5) && player2.contains(6))
+        || player2.contains(7) && player2.contains(8) && player2.contains(9) && player2.contains(10)|| player2.contains(8) && player2.contains(9) && player2.contains(10) && player2.contains(11) || player2.contains(9) && player2.contains(10) && player2.contains(11) && player2.contains(12)
+        || player2.contains(13) && player2.contains(14) && player2.contains(15) && player2.contains(16) || player2.contains(14) && player2.contains(15) && player2.contains(16) && player2.contains(17) || player2.contains(15) && player2.contains(16) && player2.contains(17) && player2.contains(18)
+        || player2.contains(19) && player2.contains(20) && player2.contains(21) && player2.contains(22) || player2.contains(21) && player2.contains(22) && player2.contains(23) && player2.contains(20) || player2.contains(21) && player2.contains(22) && player2.contains(23) && player2.contains(24)
+        || player2.contains(25) && player2.contains(26) && player2.contains(27) && player2.contains(28) || player2.contains(26) && player2.contains(27) && player2.contains(28) && player2.contains(29) || player2.contains(30) && player2.contains(27) && player2.contains(28) && player2.contains(29)
+        || player2.contains(31) && player2.contains(32) && player2.contains(33) && player2.contains(34) || player2.contains(32) && player2.contains(33) && player2.contains(34) && player2.contains(35) || player2.contains(36) && player2.contains(33) && player2.contains(34) && player2.contains(35)
+        || player2.contains(1) && player2.contains(7) && player2.contains(13) && player2.contains(19) || player2.contains(31) && player2.contains(13) && player2.contains(19) && player2.contains(25) || player2.contains(7) && player2.contains(13) && player2.contains(19) && player2.contains(25)
+        || player2.contains(2) && player2.contains(8) && player2.contains(14) && player2.contains(20) || player2.contains(8) && player2.contains(14) && player2.contains(20) && player2.contains(26) || player2.contains(32) && player2.contains(14) && player2.contains(20) && player2.contains(26)
+        || player2.contains(3) && player2.contains(9) && player2.contains(15) && player2.contains(21) || player2.contains(9) && player2.contains(15) && player2.contains(21) && player2.contains(27) || player2.contains(33) && player2.contains(15) && player2.contains(21) && player2.contains(27)
+        || player2.contains(4) && player2.contains(10) && player2.contains(16) && player2.contains(22) || player2.contains(10) && player2.contains(16) && player2.contains(22) && player2.contains(28) || player2.contains(34) && player2.contains(16) && player2.contains(22) && player2.contains(28)
+        || player2.contains(5) && player2.contains(11) && player2.contains(17) && player2.contains(23) || player2.contains(11) && player2.contains(17) && player2.contains(23) && player2.contains(29) || player2.contains(35) && player2.contains(17) && player2.contains(23) && player2.contains(29)
+        || player2.contains(6) && player2.contains(12) && player2.contains(18) && player2.contains(24) || player2.contains(12) && player2.contains(18) && player2.contains(24) && player2.contains(30) || player2.contains(36) && player2.contains(18) && player2.contains(24) && player2.contains(30)
+        || player2.contains(1) && player2.contains(8) && player2.contains(15) && player2.contains(22)  || player2.contains(8) && player2.contains(15) && player2.contains(22) && player2.contains(29) || player2.contains(36) && player2.contains(15) && player2.contains(22) && player2.contains(29)
+        || player2.contains(6) && player2.contains(11) && player2.contains(16) && player2.contains(21) || player2.contains(11) && player2.contains(16) && player2.contains(21) && player2.contains(26) || player2.contains(31) && player2.contains(16) && player2.contains(21) && player2.contains(26)
+        || player2.contains(2) && player2.contains(9) && player2.contains(16) && player2.contains(23) || player2.contains(30) && player2.contains(9) && player2.contains(16) && player2.contains(23)  || player2.contains(14) && player2.contains(21) && player2.contains(28) && player2.contains(35) || player2.contains(7) && player2.contains(14) && player2.contains(21) && player2.contains(28)
+        || player2.contains(5) && player2.contains(10) && player2.contains(15) && player2.contains(20)|| player2.contains(10) && player2.contains(15) && player2.contains(20) && player2.contains(25) || player2.contains(12) && player2.contains(17) && player2.contains(22) && player2.contains(27) || player2.contains(17) && player2.contains(22) && player2.contains(27) && player2.contains(32)
+        || player2.contains(3) && player2.contains(20) && player2.contains(27) && player2.contains(34)|| player2.contains(18) && player2.contains(23) && player2.contains(28) && player2.contains(33) || player2.contains(4) && player2.contains(9) && player2.contains(14) && player2.contains(19) || player2.contains(3) && player2.contains(10) && player2.contains(17) && player2.contains(24))
+            return 1
+        else
+            return 0
+    }
+
+
+    fun Robot_CheckBlockMove():Int
+    {
+        for(index in 1..36)
+        {
+            //println("Checking Index " + index)
+            if(!emptyCell.contains(index))
+            {
+                emptyCell.add(index)
+                player1.add(index)
+                if(TempBlockCheck()==1)
+                {
+                    print("Bot block")
+                    emptyCell.remove(index)
+                    player1.remove(index)
+                    return index
+                }
+                emptyCell.remove(index)
+                player1.remove(index)
+
+            }
+        }
+        return 0;
+    }
+    fun TempBlockCheck():Int?{
+        if((player1.contains(1) && player1.contains(2) && player1.contains(3) && player1.contains(4))||(player1.contains(2) && player1.contains(3) && player1.contains(4) && player1.contains(5) || player1.contains(3) && player1.contains(4) && player1.contains(5) && player1.contains(6))
+            || player1.contains(7) && player1.contains(8) && player1.contains(9) && player1.contains(10)|| player1.contains(8) && player1.contains(9) && player1.contains(10) && player1.contains(11) || player1.contains(9) && player1.contains(10) && player1.contains(11) && player1.contains(12)
+            || player1.contains(13) && player1.contains(14) && player1.contains(15) && player1.contains(16) || player1.contains(14) && player1.contains(15) && player1.contains(16) && player1.contains(17) || player1.contains(15) && player1.contains(16) && player1.contains(17) && player1.contains(18)
+            || player1.contains(19) && player1.contains(20) && player1.contains(21) && player1.contains(22) || player1.contains(21) && player1.contains(22) && player1.contains(23) && player1.contains(20) || player1.contains(21) && player1.contains(22) && player1.contains(23) && player1.contains(24)
+            || player1.contains(25) && player1.contains(26) && player1.contains(27) && player1.contains(28) || player1.contains(26) && player1.contains(27) && player1.contains(28) && player1.contains(29) || player1.contains(30) && player1.contains(27) && player1.contains(28) && player1.contains(29)
+            || player1.contains(31) && player1.contains(32) && player1.contains(33) && player1.contains(34) || player1.contains(32) && player1.contains(33) && player1.contains(34) && player1.contains(35) || player1.contains(36) && player1.contains(33) && player1.contains(34) && player1.contains(35)
+            || player1.contains(1) && player1.contains(7) && player1.contains(13) && player1.contains(19) || player1.contains(31) && player1.contains(13) && player1.contains(19) && player1.contains(25) || player1.contains(7) && player1.contains(13) && player1.contains(19) && player1.contains(25)
+            || player1.contains(2) && player1.contains(8) && player1.contains(14) && player1.contains(20) || player1.contains(8) && player1.contains(14) && player1.contains(20) && player1.contains(26) || player1.contains(32) && player1.contains(14) && player1.contains(20) && player1.contains(26)
+            || player1.contains(3) && player1.contains(9) && player1.contains(15) && player1.contains(21) || player1.contains(9) && player1.contains(15) && player1.contains(21) && player1.contains(27) || player1.contains(33) && player1.contains(15) && player1.contains(21) && player1.contains(27)
+            || player1.contains(4) && player1.contains(10) && player1.contains(16) && player1.contains(22) || player1.contains(10) && player1.contains(16) && player1.contains(22) && player1.contains(28) || player1.contains(34) && player1.contains(16) && player1.contains(22) && player1.contains(28)
+            || player1.contains(5) && player1.contains(11) && player1.contains(17) && player1.contains(23) || player1.contains(11) && player1.contains(17) && player1.contains(23) && player1.contains(29) || player1.contains(35) && player1.contains(17) && player1.contains(23) && player1.contains(29)
+            || player1.contains(6) && player1.contains(12) && player1.contains(18) && player1.contains(24) || player1.contains(12) && player1.contains(18) && player1.contains(24) && player1.contains(30) || player1.contains(36) && player1.contains(18) && player1.contains(24) && player1.contains(30)
+            || player1.contains(1) && player1.contains(8) && player1.contains(15) && player1.contains(22)  || player1.contains(8) && player1.contains(15) && player1.contains(22) && player1.contains(29) || player1.contains(36) && player1.contains(15) && player1.contains(22) && player1.contains(29)
+            || player1.contains(6) && player1.contains(11) && player1.contains(16) && player1.contains(21) || player1.contains(11) && player1.contains(16) && player1.contains(21) && player1.contains(26) || player1.contains(31) && player1.contains(16) && player1.contains(21) && player1.contains(26)
+            || player1.contains(2) && player1.contains(9) && player1.contains(16) && player1.contains(23) || player1.contains(30) && player1.contains(9) && player1.contains(16) && player1.contains(23)  || player1.contains(14) && player1.contains(21) && player1.contains(28) && player1.contains(35) || player1.contains(7) && player1.contains(14) && player1.contains(21) && player1.contains(28)
+            || player1.contains(5) && player1.contains(10) && player1.contains(15) && player1.contains(20)|| player1.contains(10) && player1.contains(15) && player1.contains(20) && player1.contains(25) || player1.contains(12) && player1.contains(17) && player1.contains(22) && player1.contains(27) || player1.contains(17) && player1.contains(22) && player1.contains(27) && player1.contains(32)
+            || player1.contains(3) && player1.contains(20) && player1.contains(27) && player1.contains(34)|| player1.contains(18) && player1.contains(23) && player1.contains(28) && player1.contains(33) || player1.contains(4) && player1.contains(9) && player1.contains(14) && player1.contains(19) || player1.contains(3) && player1.contains(10) && player1.contains(17) && player1.contains(24)){
+
+            return 1
+
+        }
+        else
+            return 0
+
+
+    }
+    fun Robot_CheckSwap(): Boolean {
+        var swapCheckNumber = 0 // Reset counter at the start
+
+        for (index in 1..36) {
+            if (!emptyCell.contains(index)) {
+                emptyCell.add(index)
+                player1.add(index)
+
+                if (TempBlockCheck() == 1) {
+                    swapCheckNumber+=1
+                    if (swapCheckNumber >= 2) {
+                        emptyCell.remove(index)
+                        player1.remove(index)
+                        return true // Swap if bot could block the player twice or more
+                    }
+                }
+
+                emptyCell.remove(index)
+                player1.remove(index)
+            }
+        }
+        return false
+    }
+    fun Robot_CheckTaticalMove()
+    {
+        CheckCenterPlay()
+    }
+    fun CheckCenterPlay():Int
+    {
+        val strategicCells = listOf(14, 15, 16, 17, 20, 21, 22, 23)
+        val availableStrategicCells = strategicCells.filter { !emptyCell.contains(it) }
+        if (availableStrategicCells.isNotEmpty()) {
+            return availableStrategicCells.random()
+        }
+        return 0;
+    }
+    private fun findPotentialSequence(symbol: String): Int {
+        for (index in 1..36) {
+            if (player2.contains(index)) {
+                println(isPartOfPotentialSequence(index))
+                if (isPartOfPotentialSequence(index)) {
+                    if(RetHorizontalSequence(index)!=0)
+                    {
+                        return RetHorizontalSequence(index)
+                    }
+                    else if(RetVerticalSequence(index)!=0)
+                    {
+                        return RetVerticalSequence(index)
+                    }
+                    else if(RetDiagonalSequences(index)!=0)
+                    {
+                        return RetDiagonalSequences(index)
+                    }
+                }
+            }
+        }
+        return 0
+    }
+    private fun isPartOfPotentialSequence(index: Int): Boolean {
+        // Convert index to row and column for easier handling
+        val row = (index - 1) / 6
+        val col = (index - 1) % 6
+        //return false
+        return checkHorizontalSequence(row, col) ||
+                    checkVerticalSequence(row, col) ||
+                    checkDiagonalSequences(row, col)
+    }
+
+
+    fun RetHorizontalSequence(index:Int):Int{
+        val row = (index - 1) / 6
+        val col = (index - 1) % 6
+        val leftSymbol = if (col > 0) (row * 6 + (col - 1))+1 else ""
+        val rightSymbol = if (col < 5) (row * 6 + (col - 1))+3 else ""
+        if(!emptyCell.contains(leftSymbol))
+        {
+            return (row * 6 + (col - 1))+1
+        }
+        else if(!emptyCell.contains(rightSymbol))
+        {
+            return (row * 6 + (col - 1))+3
+        }
+        return 0
+    }
+    private fun checkHorizontalSequence(row: Int, col: Int): Boolean {
+        // Check to the left and right of the position
+        var leftSymbol = if (col > 0) (row * 6 + (col - 1))+1 else ""
+        var rightSymbol = if (col < 5) (row * 6 + (col - 1))+3 else ""
+        println("leftSymbol" + (leftSymbol))
+        println("rightSymbol" + rightSymbol)
+        // Check if either side has the same symbol and the other side is empty
+
+        return (!emptyCell.contains(leftSymbol)) ||
+                (!emptyCell.contains(rightSymbol))
+    }
+    fun RetVerticalSequence(index:Int):Int{
+        val row = (index - 1) / 6
+        val col = (index - 1) % 6
+        var aboveSymbol = if (row > 0) ((row - 1) * 6 + col)+1 else ""
+        var belowSymbol = if (row < 5) ((row + 1) * 6 + col)+1 else ""
+        if(!emptyCell.contains(aboveSymbol))
+        {
+            return ((row - 1) * 6 + col)+1
+        }
+        else if(!emptyCell.contains(belowSymbol))
+        {
+            return ((row + 1) * 6 + col)+1
+        }
+        return 0
+    }
+    private fun checkVerticalSequence(row: Int, col: Int): Boolean {
+        var aboveSymbol = if (row > 0) ((row - 1) * 6 + col)+1 else ""
+        var belowSymbol = if (row < 5) ((row + 1) * 6 + col)+1 else ""
+        println("aboveSymbol" + aboveSymbol)
+        println("belowSymbol" + belowSymbol)
+        return (!emptyCell.contains(aboveSymbol)) ||
+                (!emptyCell.contains(belowSymbol))
+    }
+    fun RetDiagonalSequences(index:Int):Int{
+        val row = (index - 1) / 6
+        val col = (index - 1) % 6
+        var topLeftSymbol = if (row > 0 && col > 0) ((row - 1) * 6 + (col - 1))+1 else ""
+        var bottomRightSymbol = if (row < 5 && col < 5) ((row + 1) * 6 + (col + 1))+1 else ""
+        var topRightSymbol = if (row > 0 && col < 5) ((row - 1) * 6 + (col + 1))+1 else ""
+        var bottomLeftSymbol = if (row < 5 && col > 0)((row + 1) * 6 + (col - 1))+1 else ""
+        if(!emptyCell.contains(topLeftSymbol))
+        {
+            return ((row - 1) * 6 + (col - 1))+1
+        }
+        else if(!emptyCell.contains(bottomRightSymbol))
+        {
+            return ((row + 1) * 6 + (col + 1))+1
+        }
+        else if(!emptyCell.contains(topRightSymbol))
+        {
+            return ((row - 1) * 6 + (col + 1))+1
+        }
+        else if(!emptyCell.contains(bottomLeftSymbol))
+        {
+            return ((row + 1) * 6 + (col - 1))+1
+        }
+        return 0
+    }
+
+    private fun checkDiagonalSequences(row: Int, col: Int): Boolean {
+        var topLeftSymbol = if (row > 0 && col > 0) ((row - 1) * 6 + (col - 1))+1 else ""
+        var bottomRightSymbol = if (row < 5 && col < 5) ((row + 1) * 6 + (col + 1))+1 else ""
+        var topRightSymbol = if (row > 0 && col < 5) ((row - 1) * 6 + (col + 1))+1 else ""
+        var bottomLeftSymbol = if (row < 5 && col > 0)((row + 1) * 6 + (col - 1))+1 else ""
+        println("topLeftSymbol" + topLeftSymbol)
+        println("bottomRightSymbol" + bottomRightSymbol)
+        println("topRightSymbol" + topRightSymbol)
+        println("bottomLeftSymbol" + bottomLeftSymbol)
+
+        val diagonal1 = (!emptyCell.contains(topLeftSymbol)) ||
+                (!emptyCell.contains(bottomRightSymbol))
+        val diagonal2 = (!emptyCell.contains(topRightSymbol)) ||
+                (!emptyCell.contains(bottomLeftSymbol))
+
+        return diagonal1 || diagonal2
+    }
+
+
+    fun Robot_RandomMove(): Int {
+        val rnd = (1..36).random()
+        return if (emptyCell.contains(rnd)) {
+            Robot_RandomMove() // Recursive call if the selected cell is not empty
+        } else {
+            rnd // Return the random number if the selected cell is empty
+        }
+    }
+
 }
 
 

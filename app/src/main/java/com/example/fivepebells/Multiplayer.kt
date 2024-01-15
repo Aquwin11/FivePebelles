@@ -41,7 +41,7 @@ class Multiplayer : AppCompatActivity() {
         JoinButton = findViewById<Button>(R.id.JoinRoom)
         codeET = findViewById(R.id.CreateRoomTextView)
         CreateButton = findViewById(R.id.CreateRoom)
-
+        
         val HomeButton = findViewById<ImageButton>(R.id.HomeButton)
         HomeButton.setOnClickListener {
             super.onBackPressed()
