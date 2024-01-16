@@ -229,5 +229,15 @@ class Multiplayer : AppCompatActivity() {
         //isValueAvailable(snapshot,code)
         return false
     }
+    override fun onPause() {
+        super.onPause()
+        // Pause music when the activity is not in the foreground
+        MusicManagerObj.pauseMusic()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        // Resume music playback when the activity comes back to the foreground
+        MusicManagerObj.resumeMusic()
+    }
 }

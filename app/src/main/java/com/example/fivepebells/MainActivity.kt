@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,23 +18,50 @@ import android.widget.TextView
 
 var saveName:String = ""
 var VolumeValue:Int=0
-lateinit var mediaPlayer:MediaPlayer
+var mediaPlayer: MediaPlayer? = null
 object MusicManagerObj{
     fun startMusic(context: Context) {
-        mediaPlayer = MediaPlayer.create(context, R.raw.background)
-        mediaPlayer?.isLooping = true
-        mediaPlayer?.start()
+        println("Start Music Media Player")
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(context, R.raw.background)
+            mediaPlayer?.isLooping = true
+            mediaPlayer?.start()
+        }
     }
     fun pauseMusic() {
-        mediaPlayer?.pause()
+        println("Pause Music Media Player")
+        try {
+            if (mediaPlayer?.isPlaying == true) {
+                mediaPlayer?.pause()
+            }
+        } catch (e: IllegalStateException) {
+            Log.e("MusicManagerObj", "Error pausing MediaPlayer", e)
+            // Handle or log the exception
+        }
     }
 
     fun resumeMusic() {
-        mediaPlayer?.start()
+        println("Resume Music Media Player")
+        try {
+            // Resume only if not already playing
+            if (mediaPlayer?.isPlaying == false) {
+                mediaPlayer?.start()
+            }
+        } catch (e: IllegalStateException) {
+            Log.e("MusicManagerObj", "Error resuming MediaPlayer", e)
+            // Handle or log the exception
+        }
     }
 
     fun stopMusic() {
-        mediaPlayer?.release()
+        println("Stop Music Media Player")
+        try {
+            mediaPlayer?.release() // Release MediaPlayer resources
+            mediaPlayer = null
+        } catch (e: Exception) {
+            Log.e("MusicManagerObj", "Error releasing MediaPlayer", e)
+            // Handle or log the exception
+        }
     }
 }
 class MainActivity : AppCompatActivity() {
@@ -119,9 +147,9 @@ class MainActivity : AppCompatActivity() {
         MusicManagerObj.resumeMusic()
     }
 
-    override fun onDestroy() {
+    /*override fun onDestroy() {
         super.onDestroy()
         // Release the media player resources when the activity is destroyed
         MusicManagerObj.stopMusic()
-    }
+    }*/
 }

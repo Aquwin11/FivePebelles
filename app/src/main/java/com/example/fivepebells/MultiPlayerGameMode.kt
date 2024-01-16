@@ -825,5 +825,16 @@ class MultiPlayerGameMode : AppCompatActivity() {
         }
         Toast.makeText(this, "Swap Symbols", Toast.LENGTH_SHORT).show()
     }
+    override fun onPause() {
+        super.onPause()
+        // Pause music when the activity is not in the foreground
+        MusicManagerObj.pauseMusic()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Resume music playback when the activity comes back to the foreground
+        MusicManagerObj.resumeMusic()
+    }
 
 }

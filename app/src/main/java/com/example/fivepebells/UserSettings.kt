@@ -76,7 +76,7 @@ class UserSettings : AppCompatActivity() {
                 VolumeValue = AudioSeeker.progress
                 println("VolumeValue $VolumeValue" )
                 val volume = p1/maxvalome.toFloat()
-                mediaPlayer.setVolume(volume,volume)
+                mediaPlayer?.setVolume(volume,volume)
                 //audioManager.(AudioManager.STREAM_MUSIC, VolumeValue,0)
             }
 
@@ -193,5 +193,16 @@ class UserSettings : AppCompatActivity() {
         var userid = 1
         val result = sqLiteManager.deleteUser(userid.toString())
         println("result $result")
+    }
+    override fun onPause() {
+        super.onPause()
+        // Pause music when the activity is not in the foreground
+        MusicManagerObj.pauseMusic()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Resume music playback when the activity comes back to the foreground
+        MusicManagerObj.resumeMusic()
     }
 }

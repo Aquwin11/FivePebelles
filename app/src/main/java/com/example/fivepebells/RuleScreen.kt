@@ -34,4 +34,15 @@ class RuleScreen : AppCompatActivity() {
             else -> return super.onOptionsItemSelected(item)
         }
     }
+    override fun onPause() {
+        super.onPause()
+        // Pause music when the activity is not in the foreground
+        MusicManagerObj.pauseMusic()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Resume music playback when the activity comes back to the foreground
+        MusicManagerObj.resumeMusic()
+    }
 }
