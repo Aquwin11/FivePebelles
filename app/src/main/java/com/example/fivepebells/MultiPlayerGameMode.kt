@@ -14,6 +14,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlin.system.exitProcess
 
 var Myturn = codeMaker
@@ -236,7 +237,7 @@ class MultiPlayerGameMode : AppCompatActivity() {
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 reset()
-                //Toast.makeText(this@MultiPlayerGameMode, "Game Reset", Toast.LENGTH_SHORT).show()
+
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
@@ -258,7 +259,7 @@ class MultiPlayerGameMode : AppCompatActivity() {
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
+                notifyPlayerLeftAndReturnToLobby()
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
@@ -286,8 +287,38 @@ class MultiPlayerGameMode : AppCompatActivity() {
             switch()
         }
         //player1TV.text="$saveName : $player1count"
-    }
 
+        val lobbyRef = FirebaseDatabase.getInstance().getReference(code)
+        lobbyRef.addValueEventListener(object :
+            ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!snapshot.exists()) {
+                    // Player 1 has left and the data has been deleted
+                    notifyPlayerLeftAndReturnToLobby()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("FirebaseListener", "Failed to read value.", error.toException())
+            }
+        })
+    }
+    fun notifyPlayerLeftAndReturnToLobby() {
+        // Display a message to Player 2
+        AlertDialog.Builder(this)
+            .setTitle("Player Left")
+            .setMessage("Opponent has left the lobby. Returning to the main lobby.")
+            .setPositiveButton("OK") { dialog, which ->
+                // Navigate to the Lobby
+                navigateToLobby()
+            }
+            .show()
+    }
+    fun navigateToLobby() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()  // Close the current activity
+    }
     fun moveOnline(data : String,move:Boolean)
     {
 
@@ -476,10 +507,20 @@ class MultiPlayerGameMode : AppCompatActivity() {
 
     fun RemoveCode()
     {
-        println("keyValue " + keyValue)
+        val homeIntent = Intent(this, MainActivity::class.java)
         val database = FirebaseDatabase.getInstance()
         val roomRef = database.getReference(code)
+        val swapRef = database.getReference("Swap").child(code)
 
+        println("keyValue $keyValue")
+        val codesRef = database.getReference("codes").child("$keyValue")
+        codesRef.removeValue().addOnSuccessListener {
+            // Data deleted successfully
+            Log.d("Firebase", "Data deleted successfully.")
+        }.addOnFailureListener { exception ->
+            // Data could not be deleted
+            Log.e("Firebase", "Failed to delete data.", exception)
+        }
 // Remove the room and its child nodes
         roomRef.removeValue().addOnSuccessListener {
             // Room successfully removed
@@ -488,14 +529,14 @@ class MultiPlayerGameMode : AppCompatActivity() {
             // Failed to remove room
             Log.d("Firebase", "Failed to remove room.", it)
         }
-        val codesRef = database.getReference("codes").child(keyValue)
-        codesRef.removeValue().addOnSuccessListener {
-            // Data deleted successfully
-            Log.d("Firebase", "Data deleted successfully.")
-        }.addOnFailureListener { exception ->
-            // Data could not be deleted
-            Log.e("Firebase", "Failed to delete data.", exception)
+        swapRef.removeValue().addOnSuccessListener {
+            // Room successfully removed
+            Log.d("Firebase", "Room successfully removed.")
+        }.addOnFailureListener {
+            // Failed to remove room
+            Log.d("Firebase", "Failed to remove room.", it)
         }
+        startActivity(homeIntent)
 /*        if(codeMaker)
         {
             FirebaseDatabase.getInstance().getReference("codes").child(keyValue).removeValue()
@@ -583,6 +624,7 @@ class MultiPlayerGameMode : AppCompatActivity() {
                 FirebaseDatabase.getInstance().reference.child("data").child(code).removeValue()
             }
         }
+        Toast.makeText(this@MultiPlayerGameMode, "Game Reset", Toast.LENGTH_SHORT).show()
     }
     private fun disableReset()
     {

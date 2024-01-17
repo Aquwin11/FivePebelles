@@ -26,6 +26,9 @@ object MusicManagerObj{
             mediaPlayer = MediaPlayer.create(context, R.raw.background)
             mediaPlayer?.isLooping = true
             mediaPlayer?.start()
+            val newVolume = VolumeValue.toFloat()/100
+            //println("volume $newVolume VolumeValue $VolumeValue")
+            mediaPlayer?.setVolume(newVolume,newVolume)
         }
     }
     fun pauseMusic() {
